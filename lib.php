@@ -76,8 +76,8 @@ function block_fn_mentor_get_all_students($filter = '', $selectedcoursesonly = f
                    $extrasql
                    $wherecondions
                    $filter
-          GROUP BY ra.userid
-          ORDER BY u.lastname ASC";
+          GROUP BY u.id
+          ORDER BY u.firstname ASC";
 
     $everyone = $DB->get_records_sql($sql, $params);
 
@@ -135,7 +135,7 @@ function block_fn_mentor_get_students_without_mentor($filter = '', $sessionfilte
                    $wherecondions
           GROUP BY ra.userid
             HAVING numofmentor = :numofmentor
-          ORDER BY u.lastname ASC";
+          ORDER BY u.firstname ASC";
 
     return $DB->get_records_sql($sql, $params);
 }
@@ -233,7 +233,7 @@ function block_fn_mentor_get_mentors_without_mentee($filter = '', $sessionfilter
                    $wherecondions
           GROUP BY ra.userid
             HAVING numofmentee = :numofmentee
-          ORDER BY u.lastname ASC";
+          ORDER BY u.firstname ASC";
 
     return $DB->get_records_sql($sql, $params);
 
@@ -258,7 +258,7 @@ function block_fn_mentor_get_mentors_with_mentee() {
                AND ra.roleid = ? 
                AND u.deleted = ? 
           GROUP BY u.id
-          ORDER BY u.lastname ASC";
+          ORDER BY u.firstname ASC";
 
     if ($mentors = $DB->get_records_sql_menu($sql, array(CONTEXT_USER, $mentorroleiduser, 0))) {
         return $mentors;
@@ -311,7 +311,7 @@ function block_fn_mentor_get_mentors_without_groups($filter = '', $sessionfilter
                    $wherecondions
           GROUP BY ra.userid
             HAVING numofgroups = :numofgroups
-          ORDER BY u.lastname ASC";
+          ORDER BY u.firstname ASC";
 
     return $DB->get_records_sql($sql, $params);
 }
@@ -346,7 +346,7 @@ function block_fn_mentor_get_all_mentees($studentids='', $groupid=0) {
                    WHERE ctx.contextlevel = :contextlevel
                      AND ra.roleid = :roleid
                          {$insql}
-                ORDER BY u.lastname ASC";
+                ORDER BY u.firstname ASC";
 
     $stuwithmentor = array();
 
@@ -402,7 +402,7 @@ function block_fn_mentor_get_all_mentors($filter = '', $sessionfilter = false, $
                    $filtersql
                    $extrasql
           GROUP BY u.id
-          ORDER BY u.lastname ASC";
+          ORDER BY u.firstname ASC";
 
     $everyone = $DB->get_records_sql($sql, $params);
 
@@ -453,7 +453,7 @@ function block_fn_mentor_get_all_users($filter = '', $sessionfilter = false) {
                                     ON ra.contextid = cx.id
                                  WHERE ra.roleid = :roleid
                                    AND cx.contextlevel = :contextlevel)
-          ORDER BY u.lastname ASC";
+          ORDER BY u.firstname ASC";
 
     $everyone = $DB->get_records_sql($sql, $params);
 
@@ -521,7 +521,7 @@ function block_fn_mentor_get_mentees($mentorid, $courseid=0, $studentids = '', $
                AND ctx.contextlevel = :contextlevel
                    $extrasql
                    {$insql}
-          ORDER BY u.lastname ASC";
+          ORDER BY u.firstname ASC";
 
     $mentees = $DB->get_records_sql($sql, $params);
 
@@ -587,7 +587,7 @@ function block_fn_mentor_get_group_mentees($mentorid, $groupid) {
                AND ctx.contextlevel = ?
                AND gm.role = ?
                AND gm.groupid = ?
-          ORDER BY u.lastname ASC";
+          ORDER BY u.firstname ASC";
 
     $mentees = $DB->get_records_sql($sql, array($mentorroleid, $mentorid, CONTEXT_USER, 'U', $groupid));
 
@@ -633,7 +633,7 @@ function block_fn_mentor_get_mentors($menteeid) {
                              INNER JOIN {context} ctx2 ON ra2.contextid = ctx2.id
                                   WHERE ra2.roleid = ?
                                     AND ctx2.contextlevel = ?)
-          ORDER BY u.lastname ASC";
+          ORDER BY u.firstname ASC";
 
     return $DB->get_records_sql($sql, array(CONTEXT_USER, $mentorroleid, $menteeid, $mentorsysroleid,  CONTEXT_SYSTEM));
 
@@ -3039,7 +3039,13 @@ function block_fn_mentor_generate_report(progress_bar $progressbar = null) {
     $sqldata = "SELECT td.id, td.groups, td.mentors, GROUP_CONCAT(td.courseid) courses, ".
         $fieldsdata." td.userid FROM {block_fn_mentor_report_data} td GROUP BY td.userid";
 
-    $DB->execute($sqldrop);
+    try {
+        $DB->execute($sqldrop);
+    }
+    catch (dml_exception $e) {
+        error_log("SQL Drop Table Error" . $e);
+    }
+
     $DB->execute($sqlcreate);
     purge_all_caches();
     if ($rows = $DB->get_records_sql($sqldata)) {
@@ -3083,7 +3089,10 @@ function block_fn_mentor_footer() {
             get_string('version', 'block_fn_mentor').': '.
             html_writer::span($pluginfo->versiondb, 'mentormanager-version'),
             'mentormanagercontainer-footer-center'
-        ).
+        ),
+ /*
+        .
+
         html_writer::div(
             html_writer::link(
                 'http://ned.ca',
@@ -3091,7 +3100,9 @@ function block_fn_mentor_footer() {
                 array('target' => '_blank')
             ),
             'mentormanagercontainer-footer-right'
-        ),
+        )
+        ,
+*/
         'mentormanagercontainer-footer'
     );
     return $output;
