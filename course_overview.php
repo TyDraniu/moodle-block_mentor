@@ -421,7 +421,7 @@ if ($enrolledcourses) {
         if ($teachers = $DB->get_records_sql($sqltecher, array(50, 3, $course->id))) {
             $numofteachers = count($teachers);
             $teacherlist = '';
-            $teacherlabel = get_string('teacher', 'block_fn_mentor');
+
             foreach ($teachers as $teacher) {
                 $lastaccess = get_string('lastaccess') . get_string('labelsep', 'langconfig') .
                     block_fn_mentor_format_time(time() - $teacher->lastaccess);
@@ -429,20 +429,14 @@ if ($enrolledcourses) {
             }
             if ($numofteachers > 1) {
                 $teacherlabel = get_string('teachers', 'block_fn_mentor');
-            }
-            echo '<tr><td class="mentee-teacher-table-label" valign="top"><span>' . $teacherlabel . ': </span></td><td valign="top">';
-            if ($numofteachers > 1) {
-                echo $numofteachers . ' ' . $teacherlabel;
-                echo block_fn_mentor_modal_win(
-                    'modalTeacher'.$enrolledcourse->id,
-                    get_string('showallteachers', 'block_fn_mentor'),
-                    $enrolledcourse->fullname,
-                    $teacherlabel,
-                    $teacherlist
-                );
             } else {
-                echo $teacherlist;
+                $teacherlabel = get_string('teacher', 'block_fn_mentor');
             }
+
+            echo '<tr><td class="mentee-teacher-table-label" valign="top"><span>' . $teacherlabel . ': </span></td><td valign="top">';
+
+            echo $teacherlist;
+            echo '</td></tr>';
 
         }
         echo '</table>';
@@ -461,24 +455,21 @@ if ($enrolledcourses) {
                     block_fn_mentor_format_time(time() - $mentor->lastaccess);
                 $mentorlist .= block_fn_mentor_teacher_link($mentor->mentorid, $lastaccess);
             }
-            echo '<tr><td class="mentee-teacher-table-label" valign="top"><span>';
+
             if ($numofmentors > 1) {
-                $mentorlabel .= 's';
+                $mentorlabel =  (get_config('mentor', 'blockname')) ? get_config('mentor',
+                    'blockname') : get_string('mentors', 'block_fn_mentor');
+            } else {
+                $mentorlabel =  (get_config('mentor', 'blockname')) ? get_config('mentor',
+                    'blockname') : get_string('mentor', 'block_fn_mentor');
             }
+
+            echo '<tr><td class="mentee-teacher-table-label" valign="top"><span>';
+
             echo $mentorlabel . ': ';
             echo '</span></td><td valign="top">';
-            if ($numofmentors > 1) {
-                echo $numofmentors . ' ' . $mentorlabel;
-                echo block_fn_mentor_modal_win(
-                    'modalMentor'.$enrolledcourse->id,
-                    get_string('showallmentors', 'block_fn_mentor'),
-                    $enrolledcourse->fullname,
-                    $mentorlabel,
-                    $mentorlist
-                );
-            } else {
-                echo $mentorlist;
-            }
+            echo $mentorlist;
+
             echo '</td></tr>';
         }
         echo '</table>';
