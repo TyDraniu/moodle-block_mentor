@@ -372,7 +372,7 @@ class block_fn_mentor extends block_base {
             $this->content->text .= '<div class="mentee-block-menu">'.
                 '<img class="mentee-img" src="'.block_fn_mentor_pix_url('cog_small', 'block_fn_mentor').'">'.
                 '<a href="'.$CFG->wwwroot.'/blocks/fn_mentor/assign.php">'.
-                get_string('mentors', 'block_fn_mentor').'</a></div>';
+                get_string('manage_mentors', 'block_fn_mentor').'</a></div>';
         }
         if (has_capability('block/fn_mentor:createnotificationrule', context_system::instance())) {
             $this->content->text .= '<div class="mentee-block-menu">'.
