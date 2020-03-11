@@ -720,7 +720,7 @@ foreach ($reportcourses as $reportcourse) {
 }
 
 $sql = "SELECT r.*,
-               CONCAT(u.firstname, ' ', u.lastname) name,
+               CONCAT(u.firstname, ' ', u.lastname) AS name,
                u.firstname,
                u.lastname
           FROM {block_fn_mentor_report_pvt} r
