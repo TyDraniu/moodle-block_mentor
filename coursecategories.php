@@ -44,11 +44,9 @@ $PAGE->requires->css('/blocks/fn_mentor/css/styles.css');
 $PAGE->requires->jquery();
 $PAGE->requires->js('/blocks/fn_mentor/js/selection.js');
 
-$PAGE->navbar->add(get_string('pluginname', 'block_fn_mentor'),
-    new moodle_url('/admin/settings.php', array('section' => 'blocksettingfn_mentor')));
-
-$PAGE->navbar->add(get_string('coursecategories', 'block_fn_mentor'),
-    new moodle_url('/blocks/fn_mentor/coursecategories.php'));
+// Breadcrumb.
+$PAGE->navbar->add(get_string('pluginname', 'block_fn_mentor'));
+$PAGE->navbar->add(get_string('coursecategories', 'block_fn_mentor'));
 
 $parameters = array();
 $configcategory = get_config('block_fn_mentor', 'category');
