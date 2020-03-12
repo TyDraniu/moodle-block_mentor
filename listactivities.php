@@ -164,40 +164,40 @@ if ($completion->is_enabled() && !empty($completion)) {
 }
 
 
-// Switch to show soecific assignment.
+// Switch to show specific assignment.
 switch ($show) {
 
     case 'completed':
 
         $activitiesresults = $completedactivities;
         $name = get_string('breadcrumb:activitiescompleted', 'block_fn_mentor');
-        $title = get_string('title:completed', 'block_fn_mentor') . " (Total:" . $completedactivities . " Activities)";
+        $title = get_string('title:completed', 'block_fn_mentor', $completedactivities);
         break;
 
     case 'incompleted':
 
         $activitiesresults = $incompletedactivities;
         $name = get_string('breadcrumb:activitiesincompleted', 'block_fn_mentor');
-        $title = get_string('title:incompleted', 'block_fn_mentor') . " (Total:" . $incompletedactivities . " Activities)";
+        $title = get_string('title:incompleted', 'block_fn_mentor', $incompletedactivities);
         break;
 
     case 'draft':
 
         $activitiesresults = $savedactivities;
         $name = get_string('breadcrumb:draft', 'block_fn_mentor');
-        $title = get_string('title:saved', 'block_fn_mentor') . " (Total:" . $savedactivities . " Activities)";
+        $title = get_string('title:saved', 'block_fn_mentor', $savedactivities);
         break;
 
     case 'notattempted':
         $activitiesresults = $notattemptedactivities;
         $name = get_string('breadcrumb:notattempted', 'block_fn_mentor');
-        $title = get_string('title:notattempted', 'block_fn_mentor') . " (Total:" . $notattemptedactivities . " Activities)";
+        $title = get_string('title:notattempted', 'block_fn_mentor', $notattemptedactivities);
         break;
 
     case 'waitingforgrade':
         $activitiesresults = $waitingforgradeactivities;
         $name = get_string('breadcrumb:waitingforgrade', 'block_fn_mentor');
-        $title = get_string('title:waitingforgrade', 'block_fn_mentor') . " (Total:" . $waitingforgradeactivities . " Activities)";
+        $title = get_string('title:waitingforgrade', 'block_fn_mentor', $waitingforgradeactivities);
         break;
     default:
         break;
@@ -227,6 +227,7 @@ if (($show == 'completed' || $show == 'incompleted' || $show == 'draft'
     echo "</tr>";
 } else {
     echo '<div style="text-align:center; padding:12px;">';
+    /* TODO */
     echo "No activity with status " . get_string($show, 'block_fn_mentor') . "";
     echo "</div>";
 }
