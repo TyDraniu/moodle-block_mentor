@@ -48,7 +48,6 @@
 #page-blocks-fn_mentor-assign_mentor .mform fieldset.hidden > div {
     clear: both;
     float: none;
-    position: center;
     overflow: hidden;
     min-width: 900px;
     width: 100%;
@@ -361,7 +360,7 @@
     color: #fff;
     background-color: white;
     border-collapse: collapse;
-    border: 1px solid #cccccc;
+    border: 1px solid #ccc;
     margin-top: 10px;
     margin-bottom: 10px;
 }
@@ -371,7 +370,7 @@
     color: #000;
     padding: 4px;
     text-align: left;
-    border: 1px solid #cccccc;
+    border: 1px solid #ccc;
     font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
     font-weight: normal;
     font-size: 11px;
@@ -399,10 +398,10 @@
 #page-blocks-fn_mentor-course_overview table.simplegradebook th,
 #page-blocks-fn_mentor-course_overview_single table.simplegradebook th {
     background-color: white;
-    color: #555555;
+    color: #555;
     padding: 4px;
     text-align: center;
-    border: 1px solid #cccccc;
+    border: 1px solid #ccc;
     font-size: 12px;
     font-weight: normal;
 }
@@ -412,7 +411,7 @@
     color: #fff;
     padding: 4px;
     text-align: center;
-    border: 1px solid #cccccc;
+    border: 1px solid #ccc;
     font-size: 12px;
     font-weight: bold;
 }
@@ -497,9 +496,9 @@
     padding: 10px;
     width: 900px;
 }
-#page-blocks-fn_mentor-notification table.notification  > tbody > tr > th,
+#page-blocks-fn_mentor-notification table.notification > tbody > tr > th,
 #page-blocks-fn_mentor-course_overview table.notification > tbody > tr > th,
-#page-blocks-fn_mentor-course_overview_single table.notification  > tbody > tr > th {
+#page-blocks-fn_mentor-course_overview_single table.notification > tbody > tr > th {
     background-color: #ededed;
     border: 1px solid #b5afaf;
     padding: 10px 15px;
@@ -529,9 +528,10 @@
 #page-blocks-fn_mentor-course_overview_single .fz_form_course_category {
     font-weight: bold;
 }
-#page-blocks-fn_mentor-notification ul.fz_tree, ul.fz_tree ul,
-#page-blocks-fn_mentor-course_overview ul.fz_tree, ul.fz_tree ul,
-#page-blocks-fn_mentor-course_overview_single ul.fz_tree, ul.fz_tree ul {
+#page-blocks-fn_mentor-notification ul.fz_tree,
+#page-blocks-fn_mentor-course_overview ul.fz_tree,
+#page-blocks-fn_mentor-course_overview_single ul.fz_tree,
+ul.fz_tree ul {
     list-style-type: none;
 }
 #page-blocks-fn_mentor-notification #fitem_id_name .fitemtitle {
@@ -646,7 +646,6 @@
     position: relative;
     top: 0;
 }
-
 #page-blocks-fn_mentor-notification .notification_c1 {
     width: 131px;
 }
@@ -675,7 +674,7 @@
 }
 #page-blocks-fn_mentor-course_overview #region-main-box,
 #page-blocks-fn_mentor-course_overview_single #region-main-box {
-    width:100%;
+    width: 100%;
 }
 #page-blocks-fn_mentor-course_overview #region-main.span8,
 #page-blocks-fn_mentor-course_overview_single #region-main.span8 {
@@ -701,7 +700,7 @@
     border: 1px solid #787878;
     padding: 2px;
 }
-#page-blocks-fn_mentor-all_students table.course-completion th{
+#page-blocks-fn_mentor-all_students table.course-completion th {
     padding: 10px 2px 0 2px;
 }
 #page-blocks-fn_mentor-all_students .mentee-course-overview-block-filter {
@@ -813,7 +812,7 @@
     color: black;
 }
 a.mentormanagercontainer-footer-link {
-    color: #0000ee;
+    color: #00e;
 }
 #page-blocks-fn_mentor-course_overview .modaltbl {
     margin: auto;
