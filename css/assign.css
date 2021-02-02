@@ -6,12 +6,12 @@
 }
 #page-blocks-fn_mentor-assign select#selected-mentor,
 #page-blocks-fn_mentor-assign select#selected-mentee {
-    background-color: #D7FBD7;
+    background-color: #d7fbd7;
 }
 #page-blocks-fn_mentor-assign #mentor-action-btn-cell,
 #page-blocks-fn_mentor-assign #mentee-action-btn-cell {
     width: 10%;
-    vertical-align: middle !important;
+    vertical-align: middle;
 }
 #page-blocks-fn_mentor-assign select#potential-mentor-filter,
 #page-blocks-fn_mentor-assign select#potential-mentor,
@@ -42,7 +42,7 @@
     left: 50%;
     margin: -33px 0 0 -33px;
     position: absolute;
-    top: 50% !important;
+    top: 50%;
     width: 66px;
 }
 #page-blocks-fn_mentor-assign #group-selection-form {
@@ -62,7 +62,7 @@
     max-width: 700px;
 }
 #page-blocks-fn_mentor-assign #potential-mentor-search-text,
-#page-blocks-fn_mentor-assign #potential-mentee-search-text{
+#page-blocks-fn_mentor-assign #potential-mentee-search-text {
     background-clip: padding-box;
     background-color: #fff;
     background-image: none;

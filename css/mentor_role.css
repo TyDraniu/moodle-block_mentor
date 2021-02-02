@@ -7,10 +7,10 @@
 }
 #page-blocks-fn_mentor-mentor_role #mentor-action-btn-cell {
     width: 20%;
-    vertical-align: middle !important;
+    vertical-align: middle;
 }
 #page-blocks-fn_mentor-mentor_role select#selected-mentor {
-    background-color: #D7FBD7;
+    background-color: #d7fbd7;
 }
 #page-blocks-fn_mentor-mentor_role select#potential-mentor-filter,
 #page-blocks-fn_mentor-mentor_role select#selected-mentor-filter,

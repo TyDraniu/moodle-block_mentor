@@ -9,12 +9,12 @@
 }
 #page-blocks-fn_mentor-group_members select#selected-mentor,
 #page-blocks-fn_mentor-group_members select#selected-mentee {
-    background-color: #D7FBD7;
+    background-color: #d7fbd7;
 }
 #page-blocks-fn_mentor-group_members #mentor-action-btn-cell,
 #page-blocks-fn_mentor-group_members #mentee-action-btn-cell {
     width: 10%;
-    vertical-align: middle !important;
+    vertical-align: middle;
 }
 #page-blocks-fn_mentor-group_members select#potential-mentor-filter,
 #page-blocks-fn_mentor-group_members select#potential-mentor,

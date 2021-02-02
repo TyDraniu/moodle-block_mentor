@@ -11,7 +11,7 @@
 }
 .block_fn_mentor #studentFilterForm .select.menusortby {
     display: block;
-    margin: 0 !important;
+    margin: 0;
 }
 .block_fn_mentor #groupForm,
 .block_fn_mentor #courseForm {
