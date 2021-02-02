@@ -44,6 +44,20 @@ function xmldb_block_fn_mentor_upgrade($oldversion) {
     if (!$dbman->table_exists($table)) {
         $dbman->create_table($table);
     }
+	
+	$table = new xmldb_table('block_fn_mentor_report_pvt');
+	$table->add_field("id", XMLDB_TYPE_INTEGER, '11', null, true, true);
+	$table->add_field("userid", XMLDB_TYPE_INTEGER, '11');
+	$table->add_field("groups", XMLDB_TYPE_TEXT);
+	$table->add_field("mentors", XMLDB_TYPE_TEXT);
+
+	$table->add_key('id', XMLDB_KEY_PRIMARY, array('id'));
+	$table->add_index('use_ix', XMLDB_INDEX_NOTUNIQUE, array('userid'));
+
+	if (!$dbman->table_exists($table)) {
+		$dbman->create_table($table);
+	}
+
 
     if ($oldversion <= 2015101000) {
         $table = new xmldb_table('block_fn_mentor_notific');
