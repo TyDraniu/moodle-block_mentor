@@ -105,10 +105,6 @@ jobs:
               matrix.moodle-branch == 'MOODLE_310_STABLE' ||
               matrix.moodle-branch == 'master' }}
 
-    - name: Run phpdoc
-      if: ${{ always() }}
-      run: moodle-plugin-ci phpdoc
-
     - name: Run phpunit
       if: ${{ always() }}
       run: moodle-plugin-ci phpunit
