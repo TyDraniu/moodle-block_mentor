@@ -22,6 +22,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+global $CFG;
+
 require_once($CFG->dirroot . '/blocks/fn_mentor/lib.php');
 require_once($CFG->libdir . '/formslib.php');
 
@@ -58,10 +60,6 @@ class block_fn_mentor extends block_base {
         $isteacher = block_fn_mentor_isteacherinanycourse($USER->id);
         $isstudent = block_fn_mentor_isstudentinanycourse($USER->id);
 
-        $strmentor = get_config('block_fn_mentor', 'mentor');
-        $strmentors = get_config('block_fn_mentor', 'mentors');
-        $strmentee = get_config('block_fn_mentor', 'mentee');
-        $strmentees = get_config('block_fn_mentor', 'mentees');
         $maxnumberofmentees = get_config('block_fn_mentor', 'maxnumberofmentees');
         $menteecanview = get_config('block_fn_mentor', 'menteecanview');
         $usementorgroups = get_config('block_fn_mentor', 'usementorgroups');
@@ -125,7 +123,7 @@ class block_fn_mentor extends block_base {
         $courseurl = array(
             0 => $CFG->wwwroot.'/'.$indexphp.'?coursefilter=0&groupfilter='.$groupfilter.'&sortby='.$sortby.'&showall='.$showall
         );
-        $coursemenu = array($courseurl[0] => get_string('all_courses', 'block_fn_mentor') );
+        $coursemenu = array($courseurl[0] => get_string('all_courses', 'block_fn_mentor'));
 
         $filtercourses = array();
 
@@ -282,7 +280,7 @@ class block_fn_mentor extends block_base {
                     $groupmenu[$groupurl[$group->id]] = $group->name;
                 }
                 $this->content->text .= html_writer::tag('form',
-                    html_writer::img(block_fn_mentor_pix_url('i/group'), get_string('group', 'block_fn_mentor')) . ' ' .
+                    html_writer::img($OUTPUT->image_url('i/group', ''), get_string('group', 'block_fn_mentor')) .
                     html_writer::select($groupmenu, 'groupfilter', $groupurl[$groupfilter], null,
                         array('onChange' => 'location=document.jump3.groupfilter.'.
                             'options[document.jump3.groupfilter.selectedIndex].value;'
@@ -296,13 +294,14 @@ class block_fn_mentor extends block_base {
         // COURSE.
         if (($isteacher || $isadmin || $ismentor) && $courses && ($this->page->course->id == SITEID)) {
             $this->content->text .= html_writer::tag('form',
-                html_writer::img(block_fn_mentor_pix_url('i/course'), get_string('course', 'block_fn_mentor')) . ' ' .
+                html_writer::img($OUTPUT->image_url('i/course', ''), get_string('course', 'block_fn_mentor')) .
+                // $OUTPUT->pix_icon('i/course', get_string('course', 'block_fn_mentor')) .
                 html_writer::select($coursemenu, 'coursefilter', $courseurl[$coursefilter], null,
                     array('onChange' => 'location=document.jump2.coursefilter.'.
                         'options[document.jump2.coursefilter.selectedIndex].value;'
                     )
                 ),
-                array('id' => 'courseForm', 'name' => 'jump2')
+                ['id' => 'courseForm', 'name' => 'jump2']
             );
         }
         if ($isteacher || $isadmin || $ismentor) {

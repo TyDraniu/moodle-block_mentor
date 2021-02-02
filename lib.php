@@ -215,6 +215,35 @@ function block_fn_mentor_get_mentors_without_mentee($filter = '', $sessionfilter
     $params['roleid'] = $mentorroleid;
     $params['numofmentee'] = 0;
 
+    /*
+    with MenteeCount(id, FirstName, LastName, Mentee)
+    as
+    (SELECT u.id, u.firstname, u.lastname,
+    (SELECT COUNT(1)
+    FROM {context} ctx
+    JOIN {role_assignments} ra2
+    ON ctx.id = ra2.contextid
+    WHERE ctx.contextlevel = :contextlevel
+       AND ra2.roleid = :roleid2
+       AND ra2.userid = ra.userid) AS Mentees
+    from {role_assignments} ra
+    JOIN {user} u
+    ON ra.userid = u.id
+     WHERE u.deleted = :deleted
+               AND u.suspended = :suspended
+               AND ra.roleid = :roleid
+                   $extrasql
+                   $wherecondions
+    GROUP BY u.id
+    )
+    select id, FirstName, LastName, Mentee
+    from MenteeCount
+    where Mentees = 0
+    ORDER BY FirstName ASC
+    */
+
+
+
     $sql = "SELECT u.id, u.firstname, u.lastname,
                    (SELECT COUNT(1)
                       FROM {context} ctx
@@ -222,7 +251,7 @@ function block_fn_mentor_get_mentors_without_mentee($filter = '', $sessionfilter
                         ON ctx.id = ra2.contextid
                      WHERE ctx.contextlevel = :contextlevel
                        AND ra2.roleid = :roleid2
-                       AND ra2.userid = ra.userid) numofmentee
+                       AND ra2.userid = ra.userid) AS numofmentee
               FROM {role_assignments} ra
               JOIN {user} u
                 ON ra.userid = u.id
@@ -745,45 +774,64 @@ function block_fn_mentor_get_mentees_by_mentor($courseid=0, $filter='', $mentori
 }
 
 function block_fn_mentor_render_mentees_by_mentor($data, $show) {
-    global $DB, $CFG;
+    global $OUTPUT;
 
     $coursefilter = optional_param('coursefilter', 0, PARAM_INT);
 
     $html = '';
     foreach ($data as $mentor) {
-        $html .= '<div class="mentor"><strong><a class="mentor-profile" href="'.
-            $CFG->wwwroot.'/user/profile.php?id='.$mentor['mentor']->id.'" onclick="window.open(\''.
-            $CFG->wwwroot.'/user/profile.php?id='.$mentor['mentor']->id.'\', \'\', \'width=800,height=600,toolbar=no,'.
-            'location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes\'); return false;">'.
-            $mentor['mentor']->firstname . ' ' . $mentor['mentor']->lastname.'</a> </strong></div>';
+        $mentorurl = new moodle_url('/user/profile.php', ['id' => $mentor['mentor']->id]);
+
+        $html .= html_writer::div(
+            html_writer::nonempty_tag('strong',
+            html_writer::link($mentorurl, $mentor['mentor']->firstname . ' ' . $mentor['mentor']->lastname,
+                ['onclick' => 'window.open(\''.
+                    $mentorurl.'\', \'\', \'width=800,height=600,toolbar=no,'.
+                    'location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes\'); return false;'])
+            ), 'mentor'
+        );
+
         foreach ($mentor['mentee'] as $mentee) {
             $gradesummary = block_fn_mentor_grade_summary($mentee->studentid, $coursefilter);
             if ($gradesummary->timecompleted && $coursefilter) {
-                $menteeicon = 'complete_bullet.png';
+                $menteeicon = 'complete_bullet';
+                $menteetitle = get_string('timecompleted', 'block_fn_mentor') ;
             } else if (($gradesummary->passed > 0) && ($gradesummary->failed == 0)) {
-                $menteeicon = 'mentee_green.png';
+                $menteeicon = 'mentee_green';
+                $menteetitle = get_string('allpassed', 'block_fn_mentor') ;
             } else if (($gradesummary->passed > 0) && ($gradesummary->failed > 0)) {
-                $menteeicon = 'mentee_orange.png';
+                $menteeicon = 'mentee_orange';
+                $menteetitle = get_string('somefailed', 'block_fn_mentor') ;
             } else if (($gradesummary->passed == 0) && ($gradesummary->failed > 0)) {
-                $menteeicon = 'mentee_red.png';
+                $menteeicon = 'mentee_red';
+                $menteetitle = get_string('allfailed', 'block_fn_mentor') ;
             } else if (($gradesummary->passed == 0) && ($gradesummary->failed == 0)) {
-                $menteeicon = 'mentee_red.png';
+                $menteeicon = 'mentee_red';
+                $menteetitle = get_string('nocoursesfinished', 'block_fn_mentor');
             }
             if (!$show && !$mentee->enrolled) {
                 continue;
             }
 
             if (!$mentee->enrolled) {
-                $menteeicon = 'mentee_gray.png';
-                $html .= '<div class="mentee gray"><img class="mentee-img" src="'.$CFG->wwwroot.'/blocks/fn_mentor/pix/'.
-                    $menteeicon.'"><a href="'.$CFG->wwwroot.'/blocks/fn_mentor/course_overview.php?menteeid='.
-                    $mentee->studentid.'" >' .$mentee->firstname . ' ' . $mentee->lastname . '</a></div>';
-            } else {
-                $html .= '<div class="mentee"><img class="mentee-img" src="'.$CFG->wwwroot.'/blocks/fn_mentor/pix/'.
-                    $menteeicon.'"><a href="'.$CFG->wwwroot.'/blocks/fn_mentor/course_overview.php?menteeid='.
-                    $mentee->studentid.'" >' .$mentee->firstname . ' ' . $mentee->lastname . '</a></div>';
-            }
+                $menteeicon = 'mentee_gray';
+                $menteetitle = get_string('notenrolledanycourse', 'block_fn_mentor') ;
 
+                $html .= html_writer::div(
+                    html_writer::img($OUTPUT->image_url($menteeicon, 'block_fn_mentor'), $menteetitle,
+                        ['class' => 'mentee-img', 'title' => $menteetitle]) .
+                    html_writer::link(new moodle_url('/blocks/fn_mentor/course_overview.php', ['menteeid' => $mentee->studentid]),
+                        $mentee->firstname . ' ' . $mentee->lastname),
+                    'mentee gray'
+                );
+            } else {
+                $html .= html_writer::div(
+                    html_writer::img($OUTPUT->image_url($menteeicon, 'block_fn_mentor'), $menteetitle,
+                        ['class' => 'mentee-img', 'title' => $menteetitle]) .
+                    html_writer::link(new moodle_url('/blocks/fn_mentor/course_overview.php', ['menteeid' => $mentee->studentid]),
+                        $mentee->firstname . ' ' . $mentee->lastname),
+                    'mentee');
+            }
         }
     }
     return $html;
@@ -792,16 +840,16 @@ function block_fn_mentor_render_mentees_by_mentor($data, $show) {
 function block_fn_mentor_get_mentors_by_mentee($courseid=0, $filter='') {
 
     $data = array();
-    $alcoursestudents = array();
+    $allcoursestudents = array();
 
     if ($filter == 'teacher') {
         if ($courses = block_fn_mentor_get_teacher_courses()) {
             $courseids = implode(",", array_keys($courses));
-            $alcoursestudents = block_fn_mentor_get_enrolled_course_users ($courseids);
+            $allcoursestudents = block_fn_mentor_get_enrolled_course_users ($courseids);
         }
     }
 
-    if ($mentees = block_fn_mentor_get_all_mentees($alcoursestudents)) {
+    if ($mentees = block_fn_mentor_get_all_mentees($allcoursestudents)) {
         foreach ($mentees as $mentee) {
             if ($mentor = block_fn_mentor_get_mentors($mentee->studentid)) {
                 $data[$mentee->studentid]['mentee'] = $mentee;
@@ -814,7 +862,7 @@ function block_fn_mentor_get_mentors_by_mentee($courseid=0, $filter='') {
 }
 
 function block_fn_mentor_render_mentors_by_mentee($data) {
-    global $DB, $CFG;
+    global $CFG;
 
     $coursefilter = optional_param('coursefilter', 0, PARAM_INT);
 
@@ -1047,6 +1095,7 @@ function block_fn_mentor_grade_summary($studentid, $courseid=0) {
     if ($courseid) {
         $courses[$courseid] = $courseid;
     } else {
+        // debugging($studentid, DEBUG_DEVELOPER);
         $courses = block_fn_mentor_get_student_courses($studentid);
     }
 
@@ -1291,7 +1340,9 @@ function block_fn_mentor_get_student_courses ($studentid=0) {
                 ON ctx.instanceid = c.id
              WHERE ctx.contextlevel = ?
                AND ra.roleid = ?
-               AND ra.userid = ?";
+               AND ra.userid = ?
+          GROUP BY c.id, c.fullname
+          ORDER BY c.fullname";
 
     if ($courses = $DB->get_records_sql($sql, array(50, $studentrole, $studentid))) {
         return $courses;
@@ -1849,7 +1900,7 @@ function block_fn_mentor_report_outline_print_row($mod, $instance, $result) {
 
     echo "<tr>";
     echo "<td valign=\"top\">$image</td>";
-    echo "<td valign=\"top\" style=\"width:300\">";
+    echo "<td valign=\"top\" style=\"width:300px\">";
 
     echo "<a title=\"$mod->modfullname\"  href=\"$CFG->wwwroot/mod/$mod->modname/view.php?id=$mod->id\" ".
         "onclick=\"window.open('$CFG->wwwroot/mod/$mod->modname/view.php?id=$mod->id', '', ".
@@ -3023,32 +3074,23 @@ function block_fn_mentor_generate_report(progress_bar $progressbar = null) {
                 $field->courseid." THEN td.passinggrade ELSE '-1' END) passing".$field->courseid.",\n";
         }
     }
-    $sqldrop = "DROP TABLE {block_fn_mentor_report_pvt}";
 
-    $sqlcreate = "CREATE TABLE `{block_fn_mentor_report_pvt}` (
-          `id` bigint(11) NOT NULL AUTO_INCREMENT,
-          `userid` bigint(11) NOT NULL,
-          `mentors` text,
-          `groups` text,
-          `courses` text,
-          ".$fieldscreate."
-          PRIMARY KEY (`id`),
-          UNIQUE KEY `ix_user` (`userid`) USING BTREE
-        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8";
-
-    $sqldata = "SELECT td.id, td.groups, td.mentors, GROUP_CONCAT(td.courseid) courses, ".
-        $fieldsdata." td.userid FROM {block_fn_mentor_report_data} td GROUP BY td.userid";
+    purge_all_caches();
 
     try {
-        $DB->execute($sqldrop);
-    }
-    catch (dml_exception $e) {
-        error_log("SQL Drop Table Error" . $e);
+        $rows = $DB->get_records_sql("SELECT td.id, td.groups, td.mentors, GROUP_CONCAT(td.courseid) courses, ".
+            $fieldsdata." td.userid FROM {block_fn_mentor_report_data} td GROUP BY td.userid");
+    } catch (dml_exception $e) {
+        $rows = $DB->get_records_sql("SELECT td.userid, td.groups, td.mentors, 
+                            ARRAY_TO_STRING(ARRAY_AGG(td.courseid), ',') courses, "
+                              . $fieldsdata . " td.userid 
+                                FROM {block_fn_mentor_report_data} td 
+                                GROUP BY td.userid, td.groups, td.mentors
+                                ORDER BY td.userid");
     }
 
-    $DB->execute($sqlcreate);
-    purge_all_caches();
-    if ($rows = $DB->get_records_sql($sqldata)) {
+
+    if ($rows) {
         $numofrecords = count($rows);
         $counter = 0;
         foreach ($rows as $row) {
@@ -3065,7 +3107,6 @@ function block_fn_mentor_generate_report(progress_bar $progressbar = null) {
     }
     set_config('reportdate', time(), 'block_fn_mentor');
     set_config('inprogress', 0, 'block_fn_mentor');
-    return;
 }
 
 function block_fn_mentor_footer() {
@@ -3079,7 +3120,7 @@ function block_fn_mentor_footer() {
     $output = html_writer::div(
         html_writer::div(
             html_writer::link(
-                'http://ned.ca/mentor-manager',
+                'https://ned.ca/mentor-manager',
                 get_string('pluginname', 'block_fn_mentor'),
                 array('target' => '_blank')
             ),
@@ -3090,19 +3131,6 @@ function block_fn_mentor_footer() {
             html_writer::span($pluginfo->versiondb, 'mentormanager-version'),
             'mentormanagercontainer-footer-center'
         ),
- /*
-        .
-
-        html_writer::div(
-            html_writer::link(
-                'http://ned.ca',
-                html_writer::img(block_fn_mentor_pix_url('ned_26', 'block_fn_mentor'), 'NED'),
-                array('target' => '_blank')
-            ),
-            'mentormanagercontainer-footer-right'
-        )
-        ,
-*/
         'mentormanagercontainer-footer'
     );
     return $output;
@@ -3471,6 +3499,6 @@ function block_fn_mentor_pix_url($imagename, $component=null) {
     if ($CFG->version >= 2017051500) { // MDL 3.3+.
         return $OUTPUT->image_url($imagename, $component);
     } else {
-        return block_fn_mentor_pix_url($imagename, $component);
+        return $OUTPUT->pix_url($imagename, $component);
     }
 }

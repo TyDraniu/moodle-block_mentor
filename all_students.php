@@ -20,9 +20,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+global $OUTPUT, $DB, $CFG, $USER, $SITE, $PAGE;
+
 require_once('../../config.php');
 require_once($CFG->dirroot . '/blocks/fn_mentor/lib.php');
-require_once($CFG->dirroot . '/lib/coursecatlib.php');
 require_once($CFG->dirroot . '/notes/lib.php');
 
 // Paging options.
@@ -84,7 +85,11 @@ $studentids = implode(',', array_keys($mentees));
 // Category filter.
 $categorycourses = false;
 if ($categoryid) {
-    $categorycourses = coursecat::get($categoryid)->get_courses(array('recursive' => true, 'coursecontacts' => true));
+    try {
+        $categorycourses = core_course_category::get($categoryid)->get_courses(array('recursive' => true, 'coursecontacts' => true));
+    } catch (moodle_exception $e) {
+        print_error($e->getMessage(), 'block_fn_mentor');
+    }
 }
 
 // Group filter.
@@ -125,7 +130,7 @@ $showsitegroups = get_config('block_fn_mentor', 'showsitegroups');
 
 echo $OUTPUT->header();
 $PAGE->requires->js('/blocks/fn_mentor/textrotate.js');
-$PAGE->requires->js_function_call('textrotate_init', null, true);
+$PAGE->requires->js_init_call('textrotate_init', null, true);
 
 echo html_writer::start_div('', array('id' => 'mentee-course-overview-page'));
 
@@ -450,19 +455,23 @@ echo html_writer::end_div(); // Mentee course overview left.
 
 // Find report courses.
 $reportcourses = array();
-if ($reportpvt = $DB->get_records('block_fn_mentor_report_pvt', null, '', '*', 0, 1)) {
-    $reportpvt = reset($reportpvt);
-    foreach ($reportpvt as $index => $item) {
-        if (strpos($index, 'completion') === 0) {
-            $reportcourseid = (int)str_replace('completion', '', $index);
-            if ($categorycourses !== false) {
-                if (!isset($categorycourses[$reportcourseid])) {
-                    continue;
+try {
+    if ($reportpvt = $DB->get_records('block_fn_mentor_report_pvt', null, '', '*', 0, 1)) {
+        $reportpvt = reset($reportpvt);
+        foreach ($reportpvt as $index => $item) {
+            if (strpos($index, 'completion') === 0) {
+                $reportcourseid = (int)str_replace('completion', '', $index);
+                if ($categorycourses !== false) {
+                    if (!isset($categorycourses[$reportcourseid])) {
+                        continue;
+                    }
                 }
+                $reportcourses[$reportcourseid] = $reportcourseid;
             }
-            $reportcourses[$reportcourseid] = $reportcourseid;
         }
     }
+} catch (dml_exception $e) {
+    debugging('Table block_fn_mentor_report_pvt: ' . $e);
 }
 
 // Data column.
@@ -740,20 +749,20 @@ foreach ($columns as $column) {
         $string[$column] = get_string($column, 'block_fn_mentor');
     }
 
+    $columnicon = "";
     if ($sort != $column) {
-        $columnicon = "";
         $columndir = "DESC";
-        $columnicon = "<img class='iconsort' src=\"" . block_fn_mentor_pix_url('sort_inactive', 'block_fn_mentor') . "\" alt=\"\" />";
+        $columnicon = html_writer::img($OUTPUT->image_url('sort_inactive', 'block_fn_mentor'), '', ['class' => 'iconsort']);
     } else {
         if ($dir == 'DESC') {
             $columndir = 'ASC';
-            $columnicon = "<img class='iconsort' src=\"" . block_fn_mentor_pix_url('sort_desc', 'block_fn_mentor') . "\" alt=\"\" />";
+            $columnicon = html_writer::img($OUTPUT->image_url('sort_desc', 'block_fn_mentor'), '', ['class' => 'iconsort']);
         } else if ($dir == 'ASC') {
             $columndir = 'CLEAR';
-            $columnicon = "<img class='iconsort' src=\"" . block_fn_mentor_pix_url('sort_asc', 'block_fn_mentor') . "\" alt=\"\" />";
+            $columnicon = html_writer::img($OUTPUT->image_url('sort_asc', 'block_fn_mentor'), '', ['class' => 'iconsort']);
         } else {
             $columndir = 'DESC';
-            $columnicon = "<img class='iconsort' src=\"" . block_fn_mentor_pix_url('sort_inactive', 'block_fn_mentor') . "\" alt=\"\" />";
+            $columnicon = html_writer::img($OUTPUT->image_url('sort_inactive', 'block_fn_mentor'), '', ['class' => 'iconsort']);
         }
     }
 

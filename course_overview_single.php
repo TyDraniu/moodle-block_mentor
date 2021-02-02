@@ -172,8 +172,10 @@ $PAGE->set_title($title);
 $PAGE->set_heading($heading);
 $PAGE->set_cacheable(true);
 $PAGE->requires->css('/blocks/fn_mentor/css/styles.css');
+
+
 $PAGE->requires->js('/blocks/fn_mentor/textrotate.js');
-$PAGE->requires->js_function_call('textrotate_init', null, true);
+$PAGE->requires->js_init_call('textrotate_init', null, true);
 
 $PAGE->navbar->add(get_string('pluginname', 'block_fn_mentor'),
     new moodle_url('/blocks/fn_mentor/course_overview_single.php', array('menteeid' => $menteeid)));
@@ -495,10 +497,7 @@ if ($navpage == 'overview') {
 
     // SIMPLE GRADE BOOK.
     echo '<table class="simple-gradebook">';
-    echo '<tr>';
-    echo '<td class="blue">'.get_string('submitted_activities', 'block_fn_mentor');
-    echo '</td>';
-    echo '</tr>';
+    echo '<tr><th>' . get_string('submitted_activities', 'block_fn_mentor') . '</th></tr>';
     echo '<tr>';
     echo '<td class="white mentee-blue-border" align="middle">';
 

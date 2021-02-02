@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// defined('MOODLE_INTERNAL') || die();
+
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
 // Paging options.
@@ -38,6 +40,8 @@ $contextsystem = context_system::instance();
 require_capability('block/fn_mentor:assignmentor', context_system::instance());
 
 $thispageurl = new moodle_url('/blocks/fn_mentor/group.php');
+
+global $OUTPUT, $PAGE, $DB, $SITE;
 
 $PAGE->set_url($thispageurl);
 $PAGE->set_pagelayout('course');
@@ -105,7 +109,7 @@ foreach ($columns as $column) {
         } else {
             $columnicon = ($dir == "ASC") ? "sort_asc" : "sort_desc";
         }
-        $columnicon = "<img class='iconsort' src=\"" . block_fn_mentor_pix_url('t/' . $columnicon) . "\" alt=\"\" />";
+        $columnicon = html_writer::img($OUTPUT->image_url('t/' . $columnicon, ''), '', ['class' => 'iconsort']);
 
     }
     if (($column == 'rowcount') || ($column == 'action')) {

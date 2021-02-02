@@ -31,6 +31,7 @@ if (!isset($currenttab)) {
 }
 
 $context = context_system::instance();
+global $OUTPUT;
 
 $usementorgroups = get_config('block_fn_mentor', 'usementorgroups');
 
@@ -45,7 +46,7 @@ $toprow[] = new tabobject(
 if ($usementorgroups) {
     $toprow[] = new tabobject(
         'managementorgroups',
-        new moodle_url('/blocks/fn_mentor/group_members.php', array('id' => $id)),
+        new moodle_url('/blocks/fn_mentor/group_members.php', ['id' => $id]),
         get_string('managementorgroups', 'block_fn_mentor')
     );
 }
@@ -64,7 +65,7 @@ $toprow[] = new tabobject(
 
 $import = '';
 if (is_siteadmin()) {
-    $import = html_writer::img(block_fn_mentor_pix_url('i/import'), '', array('class' => 'fn_mentor-tab-icons')) . ' ' .
+    $import = html_writer::img($OUTPUT->image_url('i/import'), '', ['class' => 'fn_mentor-tab-icons']) . ' ' .
         html_writer::link(
             new moodle_url('/blocks/fn_mentor/importexport.php'),
             get_string('importexport', 'block_fn_mentor')
@@ -72,21 +73,15 @@ if (is_siteadmin()) {
 }
 $config = '';
 if (has_capability('moodle/site:config', context_system::instance())) {
-    $config = html_writer::img(block_fn_mentor_pix_url('i/settings'), '', array('class' => 'fn_mentor-tab-icons')) . ' ' .
+    $config = html_writer::img($OUTPUT->image_url('i/settings'), '', ['class' => 'fn_mentor-tab-icons']) . ' ' .
         html_writer::link(
             new moodle_url('/admin/settings.php', array('section' => 'blocksettingfn_mentor')),
-            get_string('config', 'block_fn_mentor'), array('target' => '_blank')
+            get_string('config', 'block_fn_mentor'), ['target' => '_blank']
         );
 }
 
-$info = html_writer::img(block_fn_mentor_pix_url('i/info'), '', array('class' => 'fn_mentor-tab-icons')).' '.
-    html_writer::link(
-        'http://ned.ca/mentor-manager',
-        get_string('help', 'block_fn_mentor'), array('target' => '_blank')
-    );
-
 echo html_writer::div(
     $OUTPUT->tabtree($toprow, $currenttab).
-    html_writer::div($import.' '.$config.' '.$info, 'block_fn_mentor_tabmeenuicons'),
+    html_writer::div($import.' '.$config, 'block_fn_mentor_tabmeenuicons'),
     'block_fn_mentor_tabmenu'
 );

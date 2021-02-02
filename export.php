@@ -38,7 +38,6 @@ if (!is_siteadmin()) {
     die;
 }
 
-$PAGE->https_required();
 
 $thispageurl = new moodle_url('/blocks/fn_mentor/export.php');
 $returnpageurl = new moodle_url('/blocks/fn_mentor/importexport.php');
@@ -46,7 +45,6 @@ $returnpageurl = new moodle_url('/blocks/fn_mentor/importexport.php');
 $PAGE->set_url($thispageurl);
 $PAGE->set_pagelayout('course');
 $PAGE->set_context($contextsystem);
-$PAGE->verify_https_required();
 
 $name = get_string('export', 'block_fn_mentor');
 $title = get_string('export', 'block_fn_mentor');

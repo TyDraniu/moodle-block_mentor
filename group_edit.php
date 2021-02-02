@@ -33,15 +33,12 @@ $contextsystem = context_system::instance();
 // Permission.
 require_capability('block/fn_mentor:assignmentor', context_system::instance());
 
-$PAGE->https_required();
-
 $thispageurl = new moodle_url('/blocks/fn_mentor/group_edit.php', array('id' => $id, 'action' => $action));
 $returnpageurl = new moodle_url('/blocks/fn_mentor/group.php');
 
 $PAGE->set_url($thispageurl);
 $PAGE->set_pagelayout('course');
 $PAGE->set_context($contextsystem);
-$PAGE->verify_https_required();
 
 $name = get_string('addedit', 'block_fn_mentor');
 $title = get_string('addedit', 'block_fn_mentor');
