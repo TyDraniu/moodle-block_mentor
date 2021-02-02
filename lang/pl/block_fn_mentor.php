@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'block_mentors_mentees', language 'en'
+ * Strings for component 'block_mentors_mentees', language 'pl'
  *
  * @package   block_mentors_mentees
  * @copyright Michael Gardener <mgardener@cissq.com>
@@ -24,7 +24,7 @@
 $string['activecategories'] = 'Active categories';
 $string['add_a_note'] = 'Dodaj notatkę';
 $string['add_all'] = 'Add All';
-$string['add_button'] = 'Add';
+$string['add_button'] = 'Dodaj';
 $string['addedit'] = 'Add/Edit';
 $string['all'] = 'All';
 $string['all_courses'] = 'Wszystkie kursy';
@@ -48,8 +48,8 @@ $string['assign'] = 'Assign';
 $string['assign_mentor'] = 'Manage mentors';
 $string['assignedtomentor'] = 'Assigned to mentor "{$a}"';
 $string['assignedtomentornot'] = 'Not assigned to mentor "{$a}"';
-$string['availablementees'] = 'Available mentees';
-$string['availablementors'] = 'Available mentors';
+$string['availablementees'] = 'Dostępni podwładni';
+$string['availablementors'] = 'Dostępni przełożeni';
 $string['automatedmessage'] = 'This is an automated message from {$a}. Please do not reply to this message';
 $string['blockinfo'] = 'Block info';
 $string['blockname'] = 'Block name';
@@ -66,16 +66,16 @@ $string['clickhere'] = '{$a}';
 $string['completed'] = 'Ukończono';
 $string['completed2'] = 'Completed - successful';
 $string['completedon'] = 'Kurs ukończony dnia<br>{$a}';
-$string['completedsuccessful'] = 'Completed - successful';
-$string['completedunsuccessful'] = 'Completed - unsuccessful';
+$string['completedsuccessful'] = 'Ukończony - pozytywnie';
+$string['completedunsuccessful'] = 'Ukończony - negatywnie';
 $string['completionnotenabled'] = '<p>Completion tracking is not enabled in this course.</p>';
-$string['completionstatus'] = 'Completion status';
-$string['config'] = 'Config';
+$string['completionstatus'] = 'Status ukończenia';
+$string['config'] = 'Ustawienia';
 $string['confirmsend'] = 'You are about to send out notifications.<br>Do you want to continue?';
 $string['consecutive'] = 'Logged in for {$a} consecutive days';
 $string['continue'] = 'Kontynuuj';
 $string['course'] = 'Kurs';
-$string['coursecategories'] = 'Course categories';
+$string['coursecategories'] = 'Kategorie szkoleń';
 $string['coursecategoriesincluded'] = 'Course categories included';
 $string['courses'] = 'Kursy';
 $string['create_new_rule'] = 'Create New Rule';
@@ -137,7 +137,7 @@ $string['how_often'] = 'Jak często';
 $string['howoften'] = 'How often to send';
 $string['idnumber'] = 'Numer ID';
 $string['import'] = 'Importuj';
-$string['importexport'] = 'Import-Export';
+$string['importexport'] = 'Import-Eksport';
 $string['importexportpagedesc'] = '<p>The import-export feature allows administrators to use a spreadsheet manager (such as Excel) to do the following:</p>
 <ol>
 <li>Assign the Mentor role to specific users (ex. Martha is a mentor)</li>
@@ -164,13 +164,13 @@ $string['manage_mentors'] = 'Zarządzaj';
 $string['manage_notification'] = 'Zarządzaj powiadomieniami';
 $string['managegroups'] = 'Manage groups';
 $string['managementorgroups'] = 'Mentor groups';
-$string['managementormenteerelations'] = 'Mentor-mentee relations';
+$string['managementormenteerelations'] = 'Relacje przełożony-podwładny';
 $string['markinmanagerscoursecats'] = 'Mentor Manager - Course Categories';
 $string['markinmanagerscoursecatsdesc'] = 'Selected the course categories that will be processed by theMentor
 Manager block on the Moodle frontpage and dashboard.';
 $string['maxnumberofmentees'] = 'Maksymalna liczba podwładnych';
 $string['mentee'] = 'Podwładny';
-$string['mentee_without_course'] = 'Show mentees without courses';
+$string['mentee_without_course'] = 'Podwładni bez szkoleń';
 $string['menteecanview'] = 'Allow mentee to see block';
 $string['mentees'] = 'Podwładni';
 $string['mentees_without_mentor'] = 'Mentees without mentor';
@@ -192,13 +192,13 @@ $string['mentorsms'] = 'Mentor (SMS)';
 $string['message_header'] = 'Progress Report from <strong>{$a->sitename}</strong> <br />Student:
 <strong>{$a->studentname}</strong> <br /><br /><hr />';
 $string['messagesprocessing'] = 'Messages are being processed.<br>Please wait for confirmation.';
-$string['myprogress'] = 'Mój postęp';
+$string['myprogress'] = 'Moje wyniki';
 $string['n1'] = 'Brak zalogowania przez {$a} dni';
 $string['n1_message'] = '{$a->firstname} has not logged on for {$a->n1} days.';
 $string['n2'] = 'Brak aktywności przez {$a} dni';
 $string['n2_message'] = '{$a->firstname} has not completed any activities in the last {$a->n2} days.';
 $string['name'] = 'Nazwa';
-$string['no_activities'] = 'There are no activities in this course.';
+$string['no_activities'] = 'W tym kursie nie ma żadnych aktywności';
 $string['nocoursetotal'] = 'Gradebook does not contain calculation for course total.';
 $string['nomessagessent'] = 'No messages were sent.';
 $string['not_found'] = 'Record not found';
@@ -226,7 +226,7 @@ $string['progress'] = 'Postęp';
 $string['progressreportfrom'] = 'Wiadomość od {$a}';
 $string['potentialusers'] = 'Potential users';
 $string['remove_all'] = 'Remove All';
-$string['remove_button'] = 'Remove';
+$string['remove_button'] = 'Usuń';
 $string['reportview'] = 'Report view';
 $string['rolename'] = 'Role name';
 $string['roles'] = 'Role';
@@ -237,14 +237,13 @@ $string['runallrules'] = 'Run all rules';
 $string['search'] = 'Szukaj';
 $string['select_student'] = 'Select student: ';
 $string['selectcategories'] = 'Select categories';
-$string['selectedmentor'] = 'Selected mentor';
-$string['selectedmentors'] = 'Selected mentors';
-$string['selectedmentees'] = 'Selected mentees';
+$string['selectedmentor'] = 'Wybrany przełożony';
+$string['selectedmentors'] = 'Wybrani przełożeni';
+$string['selectedmentees'] = 'Wybrani podwładni';
 $string['sendall'] = 'Notification criteria + Appended Message';
 $string['sendappended'] = 'Only send Appended Message';
 $string['sendusernotification'] = 'Send user notification';
 $string['setgroupleader'] = 'Set Group Leader';
-$string['settings'] = 'Ustawienia';
 $string['show'] = 'Show';
 $string['show_all'] = 'Show all Mentors & Mentees';
 $string['show_all_notes'] = 'Show all notes';
@@ -308,3 +307,8 @@ $string['wordformentor'] = 'Word for Mentor';
 $string['wordformentors'] = 'Word for Mentors';
 $string['wordformentorgroup'] = 'Word for Mentor Group';
 $string['wordformentorgroups'] = 'Word for Mentor Groups';
+$string['timecompleted'] = 'Kurs już niedostępny';
+$string['allpassed'] = 'Wszystkie zaliczone';
+$string['somefailed'] = 'Niektóre zaliczone';
+$string['allfailed'] = 'Żadne niezaliczone';
+$string['nocoursesfinished'] = 'Student nie ukończył jeszcze kursu';
