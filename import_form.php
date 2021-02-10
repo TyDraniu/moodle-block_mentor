@@ -22,7 +22,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once $CFG->libdir.'/formslib.php';
+global $CFG;
+require_once($CFG->libdir.'/formslib.php');
 
 class user_upload_form1 extends moodleform {
     public function definition () {
@@ -36,7 +37,6 @@ class user_upload_form1 extends moodleform {
         $choices = array('10' => 10, '20' => 20, '100' => 100, '1000' => 1000, '100000' => 100000);
         $mform->addElement('select', 'previewrows', get_string('rowpreviewnum', 'tool_uploaduser'), $choices);
         $mform->setType('previewrows', PARAM_INT);
-
 
         $this->add_action_buttons(false, get_string('uploadusers', 'block_fn_mentor'));
     }

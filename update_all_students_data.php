@@ -20,7 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define('NO_OUTPUT_BUFFERING', true); // progress bar is used here
+define('NO_OUTPUT_BUFFERING', true); // Progress bar is used here.
+global $CFG, $USER, $PAGE, $SITE, $OUTPUT;
 
 require_once('../../config.php');
 require_once($CFG->dirroot . '/blocks/fn_mentor/lib.php');
@@ -44,7 +45,7 @@ if (!$isteacher && !$isadmin && !$ismentor) {
 $PAGE->set_url('/blocks/fn_mentor/update_all_students_data.php');
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('course');
-$PAGE->set_cacheable(false);    // progress bar is used here
+$PAGE->set_cacheable(false);    // Progress bar is used here.
 $PAGE->requires->css('/blocks/fn_mentor/css/styles.css');
 
 $title = get_string('updatedata', 'block_fn_mentor');
@@ -52,7 +53,6 @@ $heading = $SITE->fullname;
 
 $PAGE->set_title($heading);
 $PAGE->set_heading($heading);
-
 
 $PAGE->navbar->add(get_string('pluginname', 'block_fn_mentor'));
 $PAGE->navbar->add(get_string('allstudents', 'block_fn_mentor'),
@@ -66,7 +66,7 @@ if ($process) {
     $progressbar = new progress_bar();
     $progressbar->create();
     core_php_time_limit::raise(HOURSECS);
-    // raise_memory_limit(MEMORY_EXTRA);
+
     block_fn_mentor_generate_report($progressbar);
     echo $OUTPUT->continue_button(new moodle_url('/blocks/fn_mentor/all_students.php'), 'get');
     echo $OUTPUT->footer();

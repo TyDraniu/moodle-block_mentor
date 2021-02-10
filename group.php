@@ -20,8 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// defined('MOODLE_INTERNAL') || die();
-
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
 // Paging options.
@@ -153,17 +151,19 @@ foreach ($tablerows as $tablerow) {
                 break;
             case 'action':
                 // Edit.
-                $actionurl = new moodle_url('/blocks/fn_mentor/group_edit.php', array('id' => $tablerow->id ));
+                $actionurl = new moodle_url('/blocks/fn_mentor/group_edit.php', ['id' => $tablerow->id]);
                 $actiontext = get_string('edit', 'block_fn_mentor');
-                $actionicon = html_writer::img(block_fn_mentor_pix_url('cog', 'block_fn_mentor'), $actiontext, array('width' => '16', 'height' => '16'));
+                $actionicon = html_writer::img(block_fn_mentor_pix_url('cog', 'block_fn_mentor'),
+                    $actiontext, ['width' => '16', 'height' => '16']);
                 $actionlinks .= html_writer::link($actionurl->out(), $actionicon,
-                        array('class' => 'actionlink', 'title' => $actiontext)).' ';
+                        ['class' => 'actionlink', 'title' => $actiontext]);
                 // Delete.
-                $actionurl = new moodle_url('/blocks/fn_mentor/group_delete.php', array('id' => $tablerow->id ));
+                $actionurl = new moodle_url('/blocks/fn_mentor/group_delete.php', ['id' => $tablerow->id]);
                 $actiontext = get_string('delete', 'block_fn_mentor');
-                $actionicon = html_writer::img(block_fn_mentor_pix_url('delete', 'block_fn_mentor'), $actiontext, array('width' => '16', 'height' => '16'));
+                $actionicon = html_writer::img(block_fn_mentor_pix_url('delete', 'block_fn_mentor'),
+                    $actiontext, ['width' => '16', 'height' => '16']);
                 $actionlinks .= html_writer::link($actionurl->out(), $actionicon,
-                        array('class' => 'actionlink', 'title' => $actiontext)).' ';
+                        ['class' => 'actionlink', 'title' => $actiontext]);
 
                 $$varname = new html_table_cell($actionlinks);
                 break;

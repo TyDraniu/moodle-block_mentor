@@ -144,7 +144,7 @@ $string['importexportpagedesc'] = '<p>The import-export feature allows administr
 <li>Associate Mentors with Mentees (ex. Martha is a mentor to Billy and Emily)</li>
 <li>Organize Mentors into groups (ex. Martha is part of the Green Group)</li>
 </ol>
-<p class="warning-msg"><strong>{$a} Warning:</strong> The import process will replace ALL current mentor-mentor relations in the Mentor Manager. To preserve existing data, click on the Export Users button below (to create an export file with your existing data) and then import the same file after you have made the desired changes.</p> 
+<p class="warning-msg"><strong>{$a} Warning:</strong> The import process will replace ALL current mentor-mentor relations in the Mentor Manager. To preserve existing data, click on the Export Users button below (to create an export file with your existing data) and then import the same file after you have made the desired changes.</p>
 <p>Directions:</p>
 <ol>
 <li>Click on the Export Users button below to download a spreadsheet with a list of users on your site.</li>

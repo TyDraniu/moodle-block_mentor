@@ -1639,26 +1639,23 @@ function block_fn_mentor_textinput($name, $id, $class , $value = '') {
 }
 
 function block_fn_mentor_single_button_form ($class, $url, $hiddens, $buttontext, $onclick='') {
-
     $hiddeninputs = '';
 
     if ($hiddens) {
         foreach ($hiddens as $key => $value) {
-            $hiddeninputs .= '<input type="hidden" value="'.$value.'" name="'.$key.'"/>';
+            $hiddeninputs .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => $key, 'value' => $value]);
         }
     }
 
-    $form = '<div class="'.$class.'">
-              <form action="'.$url.'" method="post">
-                <div>
-                  <input type="hidden" value="'.sesskey().'" name="sesskey"/>
-                  '.$hiddeninputs.'
-                  <input class="singlebutton" onclick="'.$onclick.'" type="submit" value="'.$buttontext.'"/>
-                </div>
-              </form>
-            </div>';
-
-    return $form;
+    return html_writer::div(
+        html_writer::tag('form',
+            html_writer::div(
+                html_writer::empty_tag('input', ['name' => 'sesskey', 'value' => sesskey()]) .
+                $hiddeninputs .
+                html_writer::empty_tag('input',
+                    ['class' => 'singlebutton', 'onclick' => $onclick, 'type' => 'submit', 'value' => $buttontext])
+            ), ['action' => $url, 'method' => 'post']),
+        $class);
 }
 
 function block_fn_mentor_render_notification_rule_table($notification, $number) {

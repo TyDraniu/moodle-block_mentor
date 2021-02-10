@@ -20,8 +20,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-global $CFG, $PAGE;
+defined('MOODLE_INTERNAL') || die();
 
+global $CFG, $PAGE;
 require_once($CFG->libdir . '/formslib.php');
 
 class notification_form extends moodleform {
@@ -93,7 +94,6 @@ class notification_form extends moodleform {
             }
         }
 
-
         $consecutive = 'block_fn_mentor_checkbox';
         if (isset($this->_customdata['consecutive'])) {
             if ($this->_customdata['consecutive']) {
@@ -114,6 +114,7 @@ class notification_form extends moodleform {
                 $teacheremail = 'block_fn_mentor_checkbox_checked';
             }
         }
+
         $teachersms = 'block_fn_mentor_checkbox';
         if (isset($this->_customdata['teachersms'])) {
             if ($this->_customdata['teachersms']) {
@@ -127,6 +128,7 @@ class notification_form extends moodleform {
                 $studentemail = 'block_fn_mentor_checkbox_checked';
             }
         }
+
         $studentsms = 'block_fn_mentor_checkbox';
         if (isset($this->_customdata['studentsms'])) {
             if ($this->_customdata['studentsms']) {
@@ -140,6 +142,7 @@ class notification_form extends moodleform {
                 $mentoremail = 'block_fn_mentor_checkbox_checked';
             }
         }
+
         $mentorsms = 'block_fn_mentor_checkbox';
         if (isset($this->_customdata['mentorsms'])) {
             if ($this->_customdata['mentorsms']) {
@@ -188,7 +191,6 @@ class notification_form extends moodleform {
                 $teachermsgenabled = 'block_fn_mentor_checkbox_checked';
             }
         }
-
 
         $studentgreeting = '';
         if (isset($this->_customdata['studentgreeting'])) {
@@ -300,8 +302,7 @@ class notification_form extends moodleform {
             'rolename' => get_string('rolename', 'block_fn_mentor'),
             'sirmadam' => get_string('sirmadam', 'block_fn_mentor'),
         );
-        
-        
+
         // Student.
         $mform->addElement('html', '<tr>');
         $mform->addElement('html', '<th colspan="2">');
@@ -321,7 +322,6 @@ class notification_form extends moodleform {
         $mform->addElement('html', '</td>');
         $mform->addElement('html', '</tr>');
 
-
         // Mentor.
         $mform->addElement('html', '<tr>');
         $mform->addElement('html', '<th colspan="2">');
@@ -340,7 +340,6 @@ class notification_form extends moodleform {
         $mform->setType('mentorappendedmsg', PARAM_RAW);
         $mform->addElement('html', '</td>');
         $mform->addElement('html', '</tr>');
-
 
         // Teacher.
         $mform->addElement('html', '<tr>');
@@ -375,9 +374,7 @@ class notification_form extends moodleform {
             (isset($this->_customdata['course'])) ? $this->_customdata['course'] : ''));
         $mform->addElement('html', '</td>');
         $mform->addElement('html', '</tr>');
-
         $mform->addElement('html', '</table>');
-
 
         $this->add_action_buttons();
 
