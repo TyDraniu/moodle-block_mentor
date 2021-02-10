@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
-* @package    block_fn_mentor
-* @copyright  Michael Gardener <mgardener@cissq.com>
-* @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-*/
+ * @package    block_fn_mentor
+ * @copyright  Michael Gardener <mgardener@cissq.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once($CFG->libdir.'/authlib.php');
@@ -63,7 +63,7 @@ $ufiltering->display_add();
 $ufiltering->display_active();
 $ufiltering->display_close();
 
-$xxx =  html_writer::tag('form',
+$xxx = html_writer::tag('form',
     html_writer::empty_tag('input',
         array(
             'type' => 'submit',

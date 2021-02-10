@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+global $CFG;
+
 require_once($CFG->dirroot.'/mod/assignment/lib.php');
 require_once($CFG->dirroot.'/lib/completionlib.php');
 
@@ -242,8 +244,6 @@ function block_fn_mentor_get_mentors_without_mentee($filter = '', $sessionfilter
     ORDER BY FirstName ASC
     */
 
-
-
     $sql = "SELECT u.id, u.firstname, u.lastname,
                    (SELECT COUNT(1)
                       FROM {context} ctx
@@ -265,8 +265,6 @@ function block_fn_mentor_get_mentors_without_mentee($filter = '', $sessionfilter
           ORDER BY u.firstname ASC";
 
     return $DB->get_records_sql($sql, $params);
-
-
 }
 
 function block_fn_mentor_get_mentors_with_mentee() {
@@ -276,16 +274,16 @@ function block_fn_mentor_get_mentors_with_mentee() {
         return false;
     }
 
-    $sql = "SELECT u.id, 
-                   CONCAT(u.firstname, u.lastname) fullname 
-              FROM {context} ctx 
-        INNER JOIN {role_assignments} ra 
-                ON ctx.id = ra.contextid 
-        INNER JOIN {user} u 
-                ON ra.userid = u.id 
-             WHERE ctx.contextlevel = ? 
-               AND ra.roleid = ? 
-               AND u.deleted = ? 
+    $sql = "SELECT u.id,
+                   CONCAT(u.firstname, u.lastname) fullname
+              FROM {context} ctx
+        INNER JOIN {role_assignments} ra
+                ON ctx.id = ra.contextid
+        INNER JOIN {user} u
+                ON ra.userid = u.id
+             WHERE ctx.contextlevel = ?
+               AND ra.roleid = ?
+               AND u.deleted = ?
           GROUP BY u.id
           ORDER BY u.firstname ASC";
 
@@ -795,16 +793,16 @@ function block_fn_mentor_render_mentees_by_mentor($data, $show) {
             $gradesummary = block_fn_mentor_grade_summary($mentee->studentid, $coursefilter);
             if ($gradesummary->timecompleted && $coursefilter) {
                 $menteeicon = 'complete_bullet';
-                $menteetitle = get_string('timecompleted', 'block_fn_mentor') ;
+                $menteetitle = get_string('timecompleted', 'block_fn_mentor');
             } else if (($gradesummary->passed > 0) && ($gradesummary->failed == 0)) {
                 $menteeicon = 'mentee_green';
-                $menteetitle = get_string('allpassed', 'block_fn_mentor') ;
+                $menteetitle = get_string('allpassed', 'block_fn_mentor');
             } else if (($gradesummary->passed > 0) && ($gradesummary->failed > 0)) {
                 $menteeicon = 'mentee_orange';
-                $menteetitle = get_string('somefailed', 'block_fn_mentor') ;
+                $menteetitle = get_string('somefailed', 'block_fn_mentor');
             } else if (($gradesummary->passed == 0) && ($gradesummary->failed > 0)) {
                 $menteeicon = 'mentee_red';
-                $menteetitle = get_string('allfailed', 'block_fn_mentor') ;
+                $menteetitle = get_string('allfailed', 'block_fn_mentor');
             } else if (($gradesummary->passed == 0) && ($gradesummary->failed == 0)) {
                 $menteeicon = 'mentee_red';
                 $menteetitle = get_string('nocoursesfinished', 'block_fn_mentor');
@@ -862,37 +860,45 @@ function block_fn_mentor_get_mentors_by_mentee($courseid=0, $filter='') {
 }
 
 function block_fn_mentor_render_mentors_by_mentee($data) {
-    global $CFG;
+    global $OUTPUT;
 
     $coursefilter = optional_param('coursefilter', 0, PARAM_INT);
 
     $html = '';
     foreach ($data as $mentee) {
-
+        $menteeicon = '';
         $gradesummary = block_fn_mentor_grade_summary($mentee['mentee']->studentid, $coursefilter);
         if ($gradesummary->timecompleted && $coursefilter) {
-            $menteeicon = 'complete_bullet.png';
+            $menteeicon = 'complete_bullet';
         } else if (($gradesummary->passed > 0) && ($gradesummary->failed == 0)) {
-            $menteeicon = 'mentee_green.png';
+            $menteeicon = 'mentee_green';
         } else if (($gradesummary->passed > 0) && ($gradesummary->failed > 0)) {
-            $menteeicon = 'mentee_orange.png';
+            $menteeicon = 'mentee_orange';
         } else if (($gradesummary->passed == 0) && ($gradesummary->failed > 0)) {
-            $menteeicon = 'mentee_red.png';
+            $menteeicon = 'mentee_red';
         } else if (($gradesummary->passed == 0) && ($gradesummary->failed == 0)) {
-            $menteeicon = 'mentee_red.png';
+            $menteeicon = 'mentee_red';
         }
-        $html .= '<div class="mentee"><strong><img class="mentor-img" src="'.
-            $CFG->wwwroot.'/blocks/fn_mentor/pix/'.$menteeicon.'"><a href="'.
-            $CFG->wwwroot.'/blocks/fn_mentor/course_overview.php?menteeid='.$mentee['mentee']->studentid.'" >' .
-            $mentee['mentee']->firstname . ' ' . $mentee['mentee']->lastname . '</strong></a></div>';
+
+        $html .= html_writer::div(
+            html_writer::nonempty_tag('strong',
+            html_writer::img($OUTPUT->image_url($menteeicon, 'block_fn_mentor'), '') .
+            html_writer::link(new moodle_url('/blocks/fn_mentor/course_overview.php', ['menteeid' => $mentee['mentee']->studentid]),
+                $mentee['mentee']->firstname . ' ' . $mentee['mentee']->lastname)),
+            'mentee');
 
         foreach ($mentee['mentor'] as $mentor) {
-            $html .= '<div class="mentor"><img class="mentee-img" src="'.
-                $CFG->wwwroot.'/blocks/fn_mentor/pix/mentor_bullet.png"><a  href="'.
-                $CFG->wwwroot.'/user/profile.php?id='.$mentor->mentorid.'" onclick="window.open(\''.
-                $CFG->wwwroot.'/user/profile.php?id='.$mentor->mentorid.'\', \'\', \'width=800,height=600,toolbar=no,'.
-                'location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes\'); '.
-                'return false;" class="mentor-profile" >'.$mentor->firstname . ' ' . $mentor->lastname.'</a></div>';
+            $mentorurl = new moodle_url('/user/profile.php', ['id' => $mentor->mentorid]);
+
+            $html .= html_writer::div(
+                html_writer::img($OUTPUT->image_url('mentor_bullet', 'block_fn_mentor'), '', ['class' => 'mentee-img']) .
+                        html_writer::link($mentorurl, $mentor->firstname . ' ' . $mentor->lastname,
+                            ['class' => 'mentor-profile',
+                            'onclick' => 'window.open(\''.
+                                $mentorurl.'\', \'\', \'width=800,height=600,toolbar=no,'.
+                                'location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes\'); return false;']),
+                    'mentor'
+            );
         }
     }
     return $html;
@@ -954,17 +960,9 @@ function block_fn_mentor_assignment_status($mod, $userid) {
                     return 'submitted';
                 }
                 break;
-            case "uploadsingle":
-                if (empty($submission->timemarked)) {
-                     return 'submitted';
-                }
-                break;
             case "online":
-                if (empty($submission->timemarked)) {
-                     return 'submitted';
-                }
-                break;
             case "offline":
+            case "uploadsingle":
                 if (empty($submission->timemarked)) {
                      return 'submitted';
                 }
@@ -1022,11 +1020,11 @@ function block_fn_mentor_assignment_status($mod, $userid) {
         if ($assignment->grade == 0) {
             if ($submission->status == 'new') {
                 return false;
-            } elseif ($submission->status == 'draft') {
+            } else if ($submission->status == 'draft') {
                 return 'saved';
-            } elseif ($submission->status == 'reopened') {
+            } else if ($submission->status == 'reopened') {
                 return 'submitted';
-            } elseif ($submission->status == 'submitted') {
+            } else if ($submission->status == 'submitted') {
                 return 'submitted';
             }
         } else {
@@ -1036,15 +1034,15 @@ function block_fn_mentor_assignment_status($mod, $userid) {
                 } else {
                     return 'waitinggrade';
                 }
-            } elseif ($submission->status == 'draft') {
+            } else if ($submission->status == 'draft') {
                 if ($graded) {
                     return 'submitted';
                 } else {
                     return 'saved';
                 }
-            } elseif ($submission->status == 'reopened') {
+            } else if ($submission->status == 'reopened') {
                 return 'submitted';
-            } elseif ($submission->status == 'submitted') {
+            } else if ($submission->status == 'submitted') {
                 if ($graded) {
                     return 'submitted';
                 } else {
@@ -1299,7 +1297,7 @@ function block_fn_mentor_print_grade_summary ($courseid , $studentid) {
 }
 
 function block_fn_mentor_get_teacher_courses ($teacherid=0) {
-    global $CFG, $DB, $USER;
+    global $DB, $USER;
 
     if (! $teacherid) {
         $teacherid = $USER->id;
@@ -1323,7 +1321,7 @@ function block_fn_mentor_get_teacher_courses ($teacherid=0) {
 }
 
 function block_fn_mentor_get_student_courses ($studentid=0) {
-    global $CFG, $DB, $USER;
+    global $DB, $USER;
 
     if (! $studentid) {
         $studentid = $USER->id;
@@ -1366,13 +1364,6 @@ function block_fn_mentor_get_enrolled_course_users ($courseids) {
         return $enrolledusers;
     }
     return false;
-}
-
-function block_fn_mentor_single_button($url, $buttonname, $class='singlebutton', $id='singlebutton') {
-
-    return '<div class="'.$class.'">
-            <button class="'.$class.'" id="'.$id.'" url="'.$url.'">'.$buttonname.'</button>
-            </div>';
 }
 
 function block_fn_mentor_get_course_category_tree($id = 0, $depth = 0) {
@@ -1894,7 +1885,7 @@ function block_fn_mentor_last_activity ($studentid) {
 }
 
 function block_fn_mentor_report_outline_print_row($mod, $instance, $result) {
-    global $OUTPUT, $CFG;
+    global $CFG;
 
     $image = "<img src=\"" . block_fn_mentor_pix_url('icon', $mod->modname) . "\" class=\"icon\" alt=\"$mod->modfullname\" />";
 
@@ -2143,7 +2134,7 @@ function block_fn_mentor_send_notifications($notificationid=null, $output=false,
                 $courses = array_merge($courses, $notification);
             }
 
-            // PREPARE NOTIFICATION FOR EACH COURSES.
+            // Prepare notification for each courses.
             foreach ($courses as $courseid) {
                 if ($course = $DB->get_record('course', array('id' => $courseid))) {
 
@@ -2315,7 +2306,7 @@ function block_fn_mentor_send_notifications($notificationid=null, $output=false,
                 $updatesql = "UPDATE {block_fn_mentor_notific} SET crontime=? WHERE id=?";
                 $DB->execute($updatesql, array(date("Y-m-d"), $notificationrule->id));
             }
-        } // END OF EACH NOTIFICATION.
+        } // End of each notification.
         if (!$list) {
             $notificationreport .= block_fn_mentor_group_messages($list);
         }
@@ -2543,14 +2534,6 @@ function block_fn_mentor_get_selected_courses($category, &$filtercourses) {
     }
 };
 
-function block_fn_mentor_embed ($text, $id) {
-    return html_writer::tag('p',
-        html_writer::empty_tag('input', array(
-            'value' => $text, 'type' => 'button', 'id' => $id
-        ))
-    );
-};
-
 function block_fn_mentor_activity_progress($course, $menteeid, $modgradesarray) {
     global $CFG, $DB, $SESSION;
 
@@ -2643,13 +2626,13 @@ function block_fn_mentor_activity_progress($course, $menteeid, $modgradesarray) 
                                 // Ungraded
                                 ++$notattemptedactivities;
                             }
-                        } else if ($modstatus = block_fn_mentor_assignment_status($activity, $menteeid, true)) {
+                        } else if ($modstatus = block_fn_mentor_assignment_status($activity, $menteeid)) {
                             switch ($modstatus) {
                                 case 'submitted':
                                     if ($instance->grade == 0) {
                                         // Graded
                                         ++$completedactivities;
-                                    } elseif ($grade = $gradefunction($instance, $menteeid)) {
+                                    } else if ($grade = $gradefunction($instance, $menteeid)) {
                                         if ($item->gradepass > 0) {
                                             if ($grade[$menteeid]->rawgrade >= $item->gradepass) {
                                                // Passed
@@ -2925,7 +2908,7 @@ function block_fn_mentor_simplegradebook($course, $menteeuser, $modgradesarray) 
                                             case 'submitted':
                                                 if ($instance->grade == 0) {
                                                     $simplegradebook[$key]['grade'][$i][$mod->id] = 'graded_.gif';
-                                                } elseif ($grade = $gradefunction($instance, $key)) {
+                                                } else if ($grade = $gradefunction($instance, $key)) {
                                                     if ($item->gradepass > 0) {
                                                         if ($grade[$key]->rawgrade >= $item->gradepass) {
                                                             $simplegradebook[$key]['grade'][$i][$mod->id] = 'marked.gif';// Passed.
@@ -3081,14 +3064,13 @@ function block_fn_mentor_generate_report(progress_bar $progressbar = null) {
         $rows = $DB->get_records_sql("SELECT td.id, td.groups, td.mentors, GROUP_CONCAT(td.courseid) courses, ".
             $fieldsdata." td.userid FROM {block_fn_mentor_report_data} td GROUP BY td.userid");
     } catch (dml_exception $e) {
-        $rows = $DB->get_records_sql("SELECT td.userid, td.groups, td.mentors, 
+        $rows = $DB->get_records_sql("SELECT td.userid, td.groups, td.mentors,
                             ARRAY_TO_STRING(ARRAY_AGG(td.courseid), ',') courses, "
-                              . $fieldsdata . " td.userid 
-                                FROM {block_fn_mentor_report_data} td 
+                              . $fieldsdata . " td.userid
+                                FROM {block_fn_mentor_report_data} td
                                 GROUP BY td.userid, td.groups, td.mentors
                                 ORDER BY td.userid");
     }
-
 
     if ($rows) {
         $numofrecords = count($rows);
@@ -3110,14 +3092,10 @@ function block_fn_mentor_generate_report(progress_bar $progressbar = null) {
 }
 
 function block_fn_mentor_footer() {
-    global $OUTPUT;
-
-    $output = '';
-
     $pluginman = core_plugin_manager::instance();
     $pluginfo = $pluginman->get_plugin_info('block_fn_mentor');
 
-    $output = html_writer::div(
+    return html_writer::div(
         html_writer::div(
             html_writer::link(
                 'https://ned.ca/mentor-manager',
@@ -3133,7 +3111,6 @@ function block_fn_mentor_footer() {
         ),
         'mentormanagercontainer-footer'
     );
-    return $output;
 }
 
 function block_fn_mentor_get_setting_courses () {
@@ -3176,7 +3153,7 @@ function block_fn_mentor_get_setting_courses () {
     return $filtercourses;
 }
 
-function block_fn_mentor_teacher_link ($userid, $lastaccess) {
+function block_fn_mentor_teacher_link($userid, $lastaccess) {
     global $DB, $CFG;
 
     if (!$user = $DB->get_record('user', array('id' => $userid))) {
@@ -3192,26 +3169,6 @@ function block_fn_mentor_teacher_link ($userid, $lastaccess) {
     '/user/profile.php?id=' . $user->id . '"><img src="' . $CFG->wwwroot .
     '/blocks/fn_mentor/pix/email.png"></a><br />' .
     '<span class="mentee-lastaccess">' . $lastaccess . '</span></div>';
-}
-
-function block_fn_mentor_modal_win($modalid, $linktext, $coursename, $sidelable, $list) {
-
-    return '<br>
-        <a href="#'.$modalid.'" role="button" data-toggle="modal">'.$linktext.'</a>
-        <div id="'.$modalid.'" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="'.$modalid.'Label" aria-hidden="true">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="'.$modalid.'Label">'.$coursename.'</h3>
-          </div>
-          <div class="modal-body">
-            <table class="modaltbl">
-              <tr>
-                <td valign="top">'.$sidelable.'</td>
-                <td valign="top">'.$list.'</td>
-              </tr>
-            </table>
-          </div>
-        </div>';
 }
 
 function block_fn_mentor_get_user_course_average($userid, $courseid) {
@@ -3265,7 +3222,7 @@ function block_fn_mentor_add_group_member($userid, $groupid, $role) {
 function block_fn_mentor_remove_group_member($userid, $groupid, $role) {
     global $DB;
 
-    $user = $DB->get_record('user', array('id'=>$userid), '*', MUST_EXIST);
+    $user = $DB->get_record('user', array('id' => $userid), '*', MUST_EXIST);
 
     if ($user->deleted) {
         return false;
@@ -3412,23 +3369,23 @@ function block_fn_mentor_uu_validate_user_upload_columns(csv_import_reader $cir,
 
     // test columns
     $processed = array();
-    foreach ($columns as $key=>$unused) {
+    foreach ($columns as $key => $unused) {
         $field = $columns[$key];
         $lcfield = core_text::strtolower($field);
         if (in_array($field, $stdfields) or in_array($lcfield, $stdfields)) {
-            // standard fields are only lowercase
+            // Standard fields are only lowercase.
             $newfield = $lcfield;
 
         } else if (in_array($field, $profilefields)) {
-            // exact profile field name match - these are case sensitive
+            // Exact profile field name match - these are case sensitive.
             $newfield = $field;
 
         } else if (in_array($lcfield, $profilefields)) {
-            // hack: somebody wrote uppercase in csv file, but the system knows only lowercase profile field
+            // Hack: somebody wrote uppercase in csv file, but the system knows only lowercase profile field.
             $newfield = $lcfield;
 
         } else if (preg_match('/^(cohort|mentor_group|site_group|mentor)\d*$/', $lcfield)) {
-            // special fields for enrolments
+            // Special fields for enrolments.
             $newfield = $lcfield;
 
         } else {

@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+global $CFG, $DB, $SESSION;
+
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/lib/plagiarismlib.php');
@@ -31,7 +33,7 @@ $courseid = optional_param('id', 2, PARAM_INT);
 $group = optional_param('group', 0, PARAM_INT);
 $unsubmitted = optional_param('unsubmitted', '0', PARAM_INT);
 
-set_current_group($courseid, $group);
+require_login(null, false);
 
 if ($courseid) {
     if (! $course = $DB->get_record('course', array('id' => $courseid))) {
@@ -40,7 +42,6 @@ if ($courseid) {
 } else {
     print_error('coursemisconf');
 }
-
 
 // Array of functions to call for grading purposes for modules.
 $modgradesarray = array(
@@ -84,7 +85,7 @@ $cobject->modnamesused = &$modnamesused;
 $cobject->sections = &$sections;
 
 
-// FIND CURRENT WEEK.
+// Find current week.
 $courseformatoptions = course_get_format($course)->get_format_options();
 if (isset($courseformatoptions['numsections'])) {
     $coursenumsections = $courseformatoptions['numsections'];
@@ -191,7 +192,7 @@ for ($i = 0; $i < $upto; $i++) {
                                             $simplegradebook[$key]['avg'][] = array('grade' => 0, 'grademax' => $item->grademax);
                                         }
                                     }
-                                } else if ($modstatus = block_fn_mentor_assignment_status($mod, $key, true)) {
+                                } else if ($modstatus = block_fn_mentor_assignment_status($mod, $key)) {
 
                                     switch ($modstatus) {
                                         case 'submitted':

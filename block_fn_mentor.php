@@ -327,7 +327,7 @@ class block_fn_mentor extends block_base {
 
                     $this->content->text .= '<div class="mentee-footer-menu">';
 
-                    $toomanyusersurl = $CFG->wwwroot.'/'.$indexphp.'?sortby='.$sortby.'&groupfilter='.$groupfilter.'&coursefilter='.$coursefilter.'&showall=1';
+                    $toomanyusersurl = new moodle_url('/'. $indexphp, ['sortby' => $sortby, 'groupfilter' => $groupfilter, 'coursefilter' => $coursefilter, 'showall' => '1']);
                     $this->content->text .= '<div class="too-many-users">'.get_string('toomanyusers', 'block_fn_mentor', $toomanyusersurl).'</div>';
 
                     $this->content->text .= '<div class="too-many-users last">'.

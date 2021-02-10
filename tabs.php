@@ -65,7 +65,7 @@ $toprow[] = new tabobject(
 
 $import = '';
 if (is_siteadmin()) {
-    $import = html_writer::img($OUTPUT->image_url('i/import'), '', ['class' => 'fn_mentor-tab-icons']) . ' ' .
+    $import = html_writer::img($OUTPUT->image_url('i/import'), '', ['class' => 'fn_mentor-tab-icons']) .
         html_writer::link(
             new moodle_url('/blocks/fn_mentor/importexport.php'),
             get_string('importexport', 'block_fn_mentor')
@@ -73,7 +73,7 @@ if (is_siteadmin()) {
 }
 $config = '';
 if (has_capability('moodle/site:config', context_system::instance())) {
-    $config = html_writer::img($OUTPUT->image_url('i/settings'), '', ['class' => 'fn_mentor-tab-icons']) . ' ' .
+    $config = html_writer::img($OUTPUT->image_url('i/settings'), '', ['class' => 'fn_mentor-tab-icons']) .
         html_writer::link(
             new moodle_url('/admin/settings.php', array('section' => 'blocksettingfn_mentor')),
             get_string('config', 'block_fn_mentor'), ['target' => '_blank']

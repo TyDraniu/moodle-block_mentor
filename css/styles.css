@@ -345,7 +345,7 @@
 #page-blocks-fn_mentor-course_overview .coursetitle a,
 #page-blocks-fn_mentor-course_overview_single .coursetitle a {
     background-color: white;
-    color: #787878 !important;
+    color: #787878;
     font-size: 16px;
     font-weight: bold;
     padding: 5px;

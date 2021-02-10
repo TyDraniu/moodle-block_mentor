@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+global $CFG, $PAGE, $DB, $OUTPUT;
+
 require_once('../../config.php');
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->dirroot . '/blocks/fn_mentor/lib.php');
@@ -121,7 +123,7 @@ if ($completion->is_enabled() && !empty($completion)) {
                             // Ungraded
                             ++$notattemptedactivities;
                         }
-                    } else if ($modstatus = block_fn_mentor_assignment_status($activity, $menteeid, true)) {
+                    } else if ($modstatus = block_fn_mentor_assignment_status($activity, $menteeid)) {
                         switch ($modstatus) {
                             case 'submitted':
                                 if ($instance->grade == 0) {

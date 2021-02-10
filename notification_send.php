@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+global $CFG, $SITE, $PAGE, $DB, $OUTPUT;
+
 require_once('../../config.php');
 require_once($CFG->dirroot . '/blocks/fn_mentor/lib.php');
 
@@ -74,7 +76,7 @@ if ($process) {
         $redirecturl = new moodle_url('/blocks/fn_mentor/notification_rules.php');
         $report = block_fn_mentor_send_notifications($notificationid, true, false);
     }
-    
+
     echo $OUTPUT->header();
 
     echo '<div class="box generalbox" id="notice">
@@ -97,7 +99,7 @@ if ($process) {
     echo '<span class="fn-send-confirm">';
     echo '<div id="notice" style="display: none" class="box generalbox notice2">'.
         get_string('messagesprocessing', 'block_fn_mentor').
-        '<br><img style="margin-left: 60px;" src="'.block_fn_mentor_pix_url('email3', 'block_fn_mentor').'"></div>';
+        '<br><img style="margin-left: 60px;" src="'.block_fn_mentor_pix_url('email3', 'block_fn_mentor').'" alt="email"></div>';
     echo $OUTPUT->confirm(get_string('confirmsend', 'block_fn_mentor'),
         new moodle_url('/blocks/fn_mentor/notification_send.php',
             array('id' => $id, 'action' => $action, 'sesskey' => sesskey(), 'process' => 1)

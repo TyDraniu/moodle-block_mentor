@@ -20,8 +20,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+global $CFG, $PAGE;
+
 require_once($CFG->libdir . '/formslib.php');
-$PAGE->requires->js('/blocks/fn_mentor/validation.js');
 
 class notification_form extends moodleform {
 

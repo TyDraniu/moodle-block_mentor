@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+global $CFG, $PAGE, $SITE, $DB, $OUTPUT;
+
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once($CFG->dirroot.'/blocks/fn_mentor/lib.php');
 require_once($CFG->dirroot.'/blocks/fn_mentor/export_form.php');
@@ -94,9 +96,8 @@ if ($mform->is_cancelled()) {
 
     // Export data.
     set_time_limit(300);
-    // raise_memory_limit(MEMORY_EXTRA);
-    $table = new stdClass();
 
+    $table = new stdClass();
     $headers = array('firstname', 'lastname', 'email', 'mentor_role');
 
     for ($i = 1; $i <= $maxgroup; $i++) {
@@ -182,10 +183,10 @@ if ($mform->is_cancelled()) {
         if ($includeextranedcolumns) {
             // Site group.
             $sql = "SELECT g.id, g.name 
-                  FROM {groups} g 
-                  JOIN {groups_members} gm 
-                    ON g.id = gm.groupid 
-                 WHERE g.courseid = ? 
+                  FROM {groups} g
+                  JOIN {groups_members} gm
+                    ON g.id = gm.groupid
+                 WHERE g.courseid = ?
                    AND gm.userid = ?";
             if ($sitegroups = $DB->get_records_sql($sql, array(SITEID, $user->id))) {
                 $sitegroups = reset($sitegroups);
@@ -193,11 +194,11 @@ if ($mform->is_cancelled()) {
             }
 
             // Site cohort.
-            $sql = "SELECT c.id, c.name, c.idnumber 
-                 FROM {cohort} c 
-                 JOIN {cohort_members} cm 
-                   ON c.id = cm.cohortid 
-                WHERE c.contextid = ? 
+            $sql = "SELECT c.id, c.name, c.idnumber
+                 FROM {cohort} c
+                 JOIN {cohort_members} cm
+                   ON c.id = cm.cohortid
+                WHERE c.contextid = ?
                   AND cm.userid = ?";
             if ($cohorts = $DB->get_records_sql($sql, array($contextsystem->id, $user->id))) {
                 $cohorts = reset($cohorts);
@@ -205,11 +206,11 @@ if ($mform->is_cancelled()) {
             }
 
             // Site and course theme.
-            $sql = "SELECT d.id, d.data 
-                      FROM {user_info_data} d 
-                      JOIN {user_info_field} f 
-                        ON d.fieldid = f.id 
-                     WHERE d.userid = ? 
+            $sql = "SELECT d.id, d.data
+                      FROM {user_info_data} d
+                      JOIN {user_info_field} f
+                        ON d.fieldid = f.id
+                     WHERE d.userid = ?
                        AND f.shortname = ?";
             $themefront = $DB->get_record_sql($sql, array($user->id, 'themefront'));
             $themecourse = $DB->get_record_sql($sql, array($user->id, 'themecourse'));
