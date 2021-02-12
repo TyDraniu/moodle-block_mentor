@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+global $CFG, $USER, $SITE, $PAGE, $OUTPUT;
+
 require_once('../../config.php');
 require_once($CFG->dirroot . '/blocks/fn_mentor/lib.php');
 require_once($CFG->dirroot . '/blocks/fn_mentor/coursecategories_form.php');
@@ -63,10 +65,9 @@ if ($mform->is_cancelled()) {
     redirect(new moodle_url('/admin/settings.php', array('section' => 'blocksettingfn_mentor')),
         get_string('successful', 'block_fn_mentor'));
 } else if ($fromform = $mform->get_data()) {
-
     set_config('category', '',  'block_fn_mentor');
     set_config('course', '',  'block_fn_mentor');
-    
+
     foreach ($_POST as $key => $value) {
         if (strpos($key, "category_") === 0) {
             if (isset($value)) {

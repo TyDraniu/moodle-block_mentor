@@ -22,6 +22,8 @@
 
 define('AJAX_SCRIPT', true);
 
+global $DB;
+
 require_once('../../config.php');
 require_once('lib.php');
 
@@ -141,8 +143,9 @@ if (has_capability('block/fn_mentor:assignmentor', context_system::instance())) 
         case 'toggle-group-leader':
             $mentor = $DB->get_record('user', array('id' => $userid, 'deleted' => 0));
 
-            if ($DB->record_exists('block_fn_mentor_group', array('id' => $groupid))) {
-                if ($gm = $DB->get_record('block_fn_mentor_group_mem', array('groupid' => $groupid, 'userid' => $userid, 'role' => 'M'))) {
+            if ($DB->record_exists('block_fn_mentor_group', ['id' => $groupid])) {
+                if ($gm = $DB->get_record('block_fn_mentor_group_mem',
+                        ['groupid' => $groupid, 'userid' => $userid, 'role' => 'M'])) {
                     $member = new stdClass();
                     $member->id = $gm->id;
                     $member->teamleader = ($gm->teamleader) ? 0 : 1;

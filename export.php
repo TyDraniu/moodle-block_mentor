@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 global $CFG, $PAGE, $SITE, $DB, $OUTPUT;
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
@@ -39,7 +41,6 @@ if (!is_siteadmin()) {
     print_error('permissionerror', 'block_fn_mentor');
     die;
 }
-
 
 $thispageurl = new moodle_url('/blocks/fn_mentor/export.php');
 $returnpageurl = new moodle_url('/blocks/fn_mentor/importexport.php');
@@ -182,7 +183,7 @@ if ($mform->is_cancelled()) {
 
         if ($includeextranedcolumns) {
             // Site group.
-            $sql = "SELECT g.id, g.name 
+            $sql = "SELECT g.id, g.name
                   FROM {groups} g
                   JOIN {groups_members} gm
                     ON g.id = gm.groupid

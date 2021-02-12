@@ -20,6 +20,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
 define('NO_OUTPUT_BUFFERING', true); // Progress bar is used here.
 global $CFG, $USER, $PAGE, $SITE, $OUTPUT;
 

@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 global $OUTPUT, $DB, $CFG, $USER, $SITE, $PAGE;
 
 require_once('../../config.php');
@@ -86,7 +88,7 @@ $studentids = implode(',', array_keys($mentees));
 $categorycourses = false;
 if ($categoryid) {
     try {
-        $categorycourses = core_course_category::get($categoryid)->get_courses(array('recursive' => true, 'coursecontacts' => true));
+        $categorycourses = core_course_category::get($categoryid)->get_courses(['recursive' => true, 'coursecontacts' => true]);
     } catch (moodle_exception $e) {
         print_error($e->getMessage(), 'block_fn_mentor');
     }
@@ -183,8 +185,8 @@ $categorymenu[$categorymenuurl[0]] = get_string('all', 'block_fn_mentor');
 if ($categorycoursesfromsetting = block_fn_mentor_get_setting_courses()) {
     list($sqlf, $params) = $DB->get_in_or_equal($categorycoursesfromsetting);
     $params[] = 1;
-    $sql = "SELECT DISTINCT cc.* FROM {course_categories} cc 
-            INNER JOIN {course} c ON cc.id = c.category 
+    $sql = "SELECT DISTINCT cc.* FROM {course_categories} cc
+            INNER JOIN {course} c ON cc.id = c.category
             WHERE c.id {$sqlf} AND cc.visible = ?";
 } else {
     $sql = "SELECT cc.* FROM {course_categories} cc WHERE cc.visible = ?";

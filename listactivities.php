@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 global $CFG, $PAGE, $DB, $OUTPUT;
 
 require_once('../../config.php');
@@ -109,18 +111,18 @@ if ($completion->is_enabled() && !empty($completion)) {
                         if ($grade = $gradefunction($instance, $menteeid)) {
                             if ($item->gradepass > 0) {
                                 if ($grade[$menteeid]->rawgrade >= $item->gradepass) {
-                                    // Passed
+                                    // Passed.
                                     ++$completedactivities;
                                 } else {
-                                    // Failed
+                                    // Failed.
                                     ++$incompletedactivities;
                                 }
                             } else {
-                                // Graded
+                                // Graded.
                                 ++$completedactivities;
                             }
                         } else {
-                            // Ungraded
+                            // Ungraded.
                             ++$notattemptedactivities;
                         }
                     } else if ($modstatus = block_fn_mentor_assignment_status($activity, $menteeid)) {
@@ -129,34 +131,34 @@ if ($completion->is_enabled() && !empty($completion)) {
                                 if ($instance->grade == 0) {
                                     // Graded
                                     ++$completedactivities;
-                                } elseif ($grade = $gradefunction($instance, $menteeid)) {
+                                } else if ($grade = $gradefunction($instance, $menteeid)) {
                                     if ($item->gradepass > 0) {
                                         if ($grade[$menteeid]->rawgrade >= $item->gradepass) {
-                                            // Passed
+                                            // Passed.
                                             ++$completedactivities;
                                         } else {
                                             // Fail.
                                             ++$incompletedactivities;
                                         }
                                     } else {
-                                        // Graded
+                                        // Graded.
                                         ++$completedactivities;
                                     }
                                 }
                                 break;
 
                             case 'saved':
-                                // Saved
+                                // Saved.
                                 ++$savedactivities;
                                 break;
 
                             case 'waitinggrade':
-                                // Waiting for grade
+                                // Waiting for grade.
                                 ++$waitingforgradeactivities;
                                 break;
                         }
                     } else {
-                        // Ungraded
+                        // Ungraded.
                         ++$notattemptedactivities;
                     }
                 }
@@ -251,7 +253,7 @@ if ($show == 'completed') {
                     if ($assignment->grade == 0) {
                         if ($submission = $DB->get_records('assign_submission', array(
                             'assignment' => $assignment->id, 'userid' => $menteeid), 'attemptnumber DESC', '*', 0, 1)
-                        ) {
+                         ) {
                            $shownogradeassignment = true;
                         }
                     }

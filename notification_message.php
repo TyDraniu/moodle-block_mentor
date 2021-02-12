@@ -20,11 +20,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+global $CFG, $DB, $SITE, $PAGE, $OUTPUT;
+
 require_once('../../config.php');
 require_once($CFG->dirroot . '/blocks/fn_mentor/lib.php');
 
 $id = required_param('id', PARAM_INT);
 $securitykey = required_param('key', PARAM_TEXT);
+
+require_login(null, false);
 
 $msg = $DB->get_record('block_fn_mentor_notific_msg', array('id' => $id, 'securitykey' => $securitykey), '*', MUST_EXIST);
 

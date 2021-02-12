@@ -121,9 +121,9 @@ class block_fn_mentor extends block_base {
 
         // COURSE SELECT.
         $courseurl = array(
-            0 => $CFG->wwwroot.'/'.$indexphp.'?coursefilter=0&groupfilter='.$groupfilter.'&sortby='.$sortby.'&showall='.$showall
+            0 => new moodle_url('/'. $indexphp, ['coursefilter' => 0, 'groupfilter' => $groupfilter, 'sortby' => $sortby, 'showall' => $showall])
         );
-        $coursemenu = array($courseurl[0] => get_string('all_courses', 'block_fn_mentor'));
+        $coursemenu = array($courseurl[0]->out() => get_string('all_courses', 'block_fn_mentor'));
 
         $filtercourses = array();
 
@@ -259,9 +259,10 @@ class block_fn_mentor extends block_base {
         if (($isadmin || $ismentor)) {
 
             $groupurl = array(
-                0 => $CFG->wwwroot.'/'.$indexphp.'?coursefilter='.$coursefilter.'&groupfilter=0&sortby='.$sortby.'&showall='.$showall
+                0 => new moodle_url('/'. $indexphp,
+                    ['coursefilter' => $coursefilter, 'groupfilter' => 0, 'sortby' => $sortby, 'showall' => $showall])
             );
-            $groupmenu = array($groupurl[0] => get_string('allmentorgroups', 'block_fn_mentor'));
+            $groupmenu = array($groupurl[0]->out() => get_string('allmentorgroups', 'block_fn_mentor'));
             if ($isadmin) {
                 $groups = $DB->get_records('block_fn_mentor_group', null, 'name ASC');
             } else if ($ismentor) {
@@ -276,8 +277,9 @@ class block_fn_mentor extends block_base {
             }
             if ($groups && $usementorgroups) {
                 foreach ($groups as $group) {
-                    $groupurl[$group->id] = $CFG->wwwroot.'/'.$indexphp.'?coursefilter='.$coursefilter.'&groupfilter='.$group->id.'&sortby='.$sortby.'&showall='.$showall;
-                    $groupmenu[$groupurl[$group->id]] = $group->name;
+                    $groupurl[$group->id] = new moodle_url('/'. $indexphp,
+                        ['coursefilter' => $coursefilter, 'groupfilter' => $group->id, 'sortby' => $sortby, 'showall' => $showall]);
+                    $groupmenu[$groupurl[$group->id]->out()] = $group->name;
                 }
                 $this->content->text .= html_writer::tag('form',
                     html_writer::img($OUTPUT->image_url('i/group', ''), get_string('group', 'block_fn_mentor')) .
@@ -295,7 +297,7 @@ class block_fn_mentor extends block_base {
         if (($isteacher || $isadmin || $ismentor) && $courses && ($this->page->course->id == SITEID)) {
             $this->content->text .= html_writer::tag('form',
                 html_writer::img($OUTPUT->image_url('i/course', ''), get_string('course', 'block_fn_mentor')) .
-                // $OUTPUT->pix_icon('i/course', get_string('course', 'block_fn_mentor')) .
+
                 html_writer::select($coursemenu, 'coursefilter', $courseurl[$coursefilter], null,
                     array('onChange' => 'location=document.jump2.coursefilter.'.
                         'options[document.jump2.coursefilter.selectedIndex].value;'
@@ -327,14 +329,15 @@ class block_fn_mentor extends block_base {
 
                     $this->content->text .= '<div class="mentee-footer-menu">';
 
-                    $toomanyusersurl = new moodle_url('/'. $indexphp, ['sortby' => $sortby, 'groupfilter' => $groupfilter, 'coursefilter' => $coursefilter, 'showall' => '1']);
-                    $this->content->text .= '<div class="too-many-users">'.get_string('toomanyusers', 'block_fn_mentor', $toomanyusersurl).'</div>';
+                    $toomanyusersurl = new moodle_url('/'. $indexphp,
+                        ['sortby' => $sortby, 'groupfilter' => $groupfilter, 'coursefilter' => $coursefilter, 'showall' => '1']);
+                    $this->content->text .= html_writer::div(get_string('toomanyusers', 'block_fn_mentor', $toomanyusersurl),
+                        "too-many-users");
 
                     $this->content->text .= '<div class="too-many-users last">'.
                         '<a class="btn btn-secondary" href="'.$CFG->wwwroot.'/blocks/fn_mentor/course_overview.php">'.
                         '<img src="'.block_fn_mentor_pix_url('i/group').'" class="mentee-img"> '.
                         get_string('open_progress_reports', 'block_fn_mentor').'</a></div>';
-
 
                     $this->content->text .= '</div>';
                 } else {
@@ -348,7 +351,8 @@ class block_fn_mentor extends block_base {
 
                 if (($numberofmentees > $maxnumberofmentees) && (!$showall)) {
                     $this->content->text .= '<div class="mentee-footer-menu">'.
-                        '<div class="mentee-block-menu"><img class="mentee-img" src="'.block_fn_mentor_pix_url('i/navigationitem').'">'.
+                        '<div class="mentee-block-menu">' .
+                        '<img class="mentee-img" src="'.block_fn_mentor_pix_url('i/navigationitem').'">'.
                         '<a href="'.$CFG->wwwroot.'/blocks/fn_mentor/course_overview.php">'.
                         get_string('open_progress_reports', 'block_fn_mentor').'</a></div>';
 
