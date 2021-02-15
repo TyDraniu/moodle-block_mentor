@@ -101,7 +101,9 @@ jobs:
       - name: Run grunt
         if: ${{ always() }}
         run: moodle-plugin-ci grunt
-        continue-on-error: ${{ always()  }}
+        continue-on-error: ${{ matrix.moodle-branch == 'MOODLE_35_STABLE' ||
+          matrix.moodle-branch == 'MOODLE_310_STABLE' ||
+          matrix.moodle-branch == 'master' }}
 
       - name: Run phpunit
         if: ${{ always() }}
