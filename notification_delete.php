@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+global $DB, $OUTPUT, $USER;
+
 require_once('../../config.php');
 
 $id = optional_param('id', 0, PARAM_INT);

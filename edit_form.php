@@ -22,6 +22,7 @@
 defined('MOODLE_INTERNAL') || die();
 require_once(dirname(__FILE__) . '/../../config.php');
 
+require_login(null, false);
 
 class block_fn_mentor_edit_form extends block_edit_form {
 

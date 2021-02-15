@@ -19,6 +19,8 @@
  * @copyright  Michael Gardener <mgardener@cissq.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
 
 require_once($CFG->libdir . '/formslib.php');
 
@@ -27,7 +29,6 @@ class coursecategory_form extends moodleform {
     public function definition() {
 
         $mform = $this->_form;
-        //$mform->addElement('static', 'description', '', get_string('markinmanagerscoursecatsdesc', 'block_fn_mentor'));
 
         $table = new html_table();
         $table->attributes['class'] = 'notification';
@@ -39,11 +40,10 @@ class coursecategory_form extends moodleform {
         $c1->text = block_fn_mentor_category_tree_form($categories,
                                        (isset($this->_customdata['category'])) ? $this->_customdata['category'] : '',
                                        (isset($this->_customdata['course'])) ? $this->_customdata['course'] : '');
-        $table->data[] = new html_table_row(array( $c1));
+        $table->data[] = new html_table_row(array($c1));
 
         $mform->addElement('static', 'selectors', '', html_writer::table($table));
 
         $this->add_action_buttons();
-
     }
 }

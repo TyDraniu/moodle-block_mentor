@@ -20,6 +20,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+global $CFG, $DB, $PAGE, $SITE, $OUTPUT;
+
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/csvlib.class.php');
@@ -36,7 +39,6 @@ $iid         = optional_param('iid', '', PARAM_INT);
 $previewrows = optional_param('previewrows', 10, PARAM_INT);
 
 core_php_time_limit::raise(60 * 60); // 1 hour should be enough.
-// raise_memory_limit(MEMORY_HUGE);
 
 $struserupdated             = get_string('useraccountupdated', 'tool_uploaduser');
 $strusernotupdated          = get_string('usernotupdatederror', 'error');
@@ -84,13 +86,9 @@ if ($proffields = $DB->get_records('user_info_field')) {
 
 $returnurl = new moodle_url('/blocks/fn_mentor/importexport.php');
 
-// HTTPS is required in this page when $CFG->loginhttps enabled.
-$PAGE->https_required();
-
 $PAGE->set_url('/blocks/fn_mentor/import.php');
 $PAGE->set_pagelayout('course');
 $PAGE->set_context(context_system::instance());
-$PAGE->verify_https_required();
 
 $editaccount = get_string('import', 'block_fn_mentor');
 $login       = get_string('login');
@@ -122,7 +120,7 @@ if (empty($iid)) {
         if (!is_null($csvloaderror)) {
             print_error('csvloaderror', '', $returnurl, $csvloaderror);
         }
-        $filecolumns = block_fn_mentor_uu_validate_user_upload_columns($cir, $stdfields, $prffields, $returnurl);
+        $filecolumns = block_fn_mentor_validate_user_upload_columns($cir, $stdfields, $prffields, $returnurl);
     } else {
         echo $OUTPUT->header();
 
@@ -139,7 +137,7 @@ if (empty($iid)) {
     }
 } else {
     $cir = new csv_import_reader($iid, 'uploaduser');
-    $filecolumns = block_fn_mentor_uu_validate_user_upload_columns($cir, $stdfields, $prffields, $returnurl);
+    $filecolumns = block_fn_mentor_validate_user_upload_columns($cir, $stdfields, $prffields, $returnurl);
 }
 
 $mform2 = new user_uploaduser_form2(null,

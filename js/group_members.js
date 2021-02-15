@@ -56,7 +56,7 @@ $(document).ready(function() {
 
         if ((mentorid > 0) && (type == 'mentee')) {
             filter_menu = 'get_mentees'
-            sessionfilter =  true;
+            sessionfilter = true;
         }
 
         $.ajax({

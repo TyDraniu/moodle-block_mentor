@@ -23,6 +23,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+global $CFG;
+
 require_once($CFG->dirroot.'/user/filters/text.php');
 require_once($CFG->dirroot.'/user/filters/date.php');
 require_once($CFG->dirroot.'/user/filters/select.php');
@@ -58,6 +61,8 @@ class fn_user_filtering {
      * @param array $fieldnames array of visible user fields
      * @param string $baseurl base url used for submission/return, null if the same of current page
      * @param array $extraparams extra page parameters
+     * @param string $filtertype
+     * @param string $returnurl
      */
     public function __construct($fieldnames = null, $baseurl = null, $extraparams = null, $filtertype = '', $returnurl = '') {
         global $SESSION;
@@ -71,10 +76,10 @@ class fn_user_filtering {
         }
 
         if (empty($fieldnames)) {
-            $fieldnames = array('realname' => 0, 'lastname' => 1, 'firstname' => 1, 'username' => 1, 'email' => 1, 'city' => 1, 'country' => 1,
-                                'confirmed' => 1, 'suspended' => 1, 'profile' => 1, 'courserole' => 1, 'systemrole' => 1,
-                                'cohort' => 1, 'firstaccess' => 1, 'lastaccess' => 1, 'neveraccessed' => 1, 'timemodified' => 1,
-                                'nevermodified' => 1, 'auth' => 1, 'mnethostid' => 1, 'idnumber' => 1, 'institution' => 1);
+            $fieldnames = ['realname' => 0, 'lastname' => 1, 'firstname' => 1, 'username' => 1, 'email' => 1, 'city' => 1,
+                    'country' => 1, 'confirmed' => 1, 'suspended' => 1, 'profile' => 1, 'courserole' => 1, 'systemrole' => 1,
+                    'cohort' => 1, 'firstaccess' => 1, 'lastaccess' => 1, 'neveraccessed' => 1, 'timemodified' => 1,
+                    'nevermodified' => 1, 'auth' => 1, 'mnethostid' => 1, 'idnumber' => 1, 'institution' => 1];
         }
 
         $this->_fields  = array();
@@ -147,7 +152,7 @@ class fn_user_filtering {
             case 'username':    return new user_filter_text('username', get_string('username'), $advanced, 'username');
             case 'realname':    return new user_filter_text('realname', get_string('fullnameuser'), $advanced, $DB->sql_fullname());
             case 'lastname':    return new user_filter_text('lastname', get_string('lastname'), $advanced, 'lastname');
-            case 'firstname':    return new user_filter_text('firstname', get_string('firstname'), $advanced, 'firstname');
+            case 'firstname':   return new user_filter_text('firstname', get_string('firstname'), $advanced, 'firstname');
             case 'email':       return new user_filter_text('email', get_string('email'), $advanced, 'email');
             case 'city':        return new user_filter_text('city', get_string('city'), $advanced, 'city');
             case 'institution': return new user_filter_text('institution', get_string('institution'), $advanced, 'institution');
@@ -159,7 +164,7 @@ class fn_user_filtering {
             case 'systemrole':  return new user_filter_globalrole('systemrole', get_string('globalrole', 'role'), $advanced);
             case 'firstaccess': return new user_filter_date('firstaccess', get_string('firstaccess', 'filters'), $advanced, 'firstaccess');
             case 'lastaccess':  return new user_filter_date('lastaccess', get_string('lastaccess'), $advanced, 'lastaccess');
-            case 'neveraccessed': return new user_filter_checkbox('neveraccessed', get_string('neveraccessed', 'filters'), $advanced, 'firstaccess', array('lastaccess_sck', 'lastaccess_eck', 'firstaccess_eck', 'firstaccess_sck'));
+            case 'neveraccessed': return new user_filter_checkbox('neveraccessed', get_string('neveraccessed', 'filters'), $advanced, 'firstaccess', ['lastaccess_sck', 'lastaccess_eck', 'firstaccess_eck', 'firstaccess_sck']);
             case 'timemodified': return new user_filter_date('timemodified', get_string('lastmodified'), $advanced, 'timemodified');
             case 'nevermodified': return new user_filter_checkbox('nevermodified', get_string('nevermodified', 'filters'), $advanced, array('timemodified', 'timecreated'), array('timemodified_sck', 'timemodified_eck'));
             case 'cohort':      return new user_filter_cohort($advanced);

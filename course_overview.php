@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+global $CFG, $USER, $DB, $SITE, $PAGE, $OUTPUT;
+
 require_once('../../config.php');
 require_once($CFG->dirroot . '/blocks/fn_mentor/lib.php');
 require_once($CFG->dirroot . '/notes/lib.php');
@@ -457,10 +459,10 @@ if ($enrolledcourses) {
             }
 
             if ($numofmentors > 1) {
-                $mentorlabel =  (get_config('mentor', 'blockname')) ? get_config('mentor',
+                $mentorlabel = (get_config('mentor', 'blockname')) ? get_config('mentor',
                     'blockname') : get_string('mentors', 'block_fn_mentor');
             } else {
-                $mentorlabel =  (get_config('mentor', 'blockname')) ? get_config('mentor',
+                $mentorlabel = (get_config('mentor', 'blockname')) ? get_config('mentor',
                     'blockname') : get_string('mentor', 'block_fn_mentor');
             }
 
@@ -527,7 +529,6 @@ if ($enrolledcourses) {
         echo '</tr>';
 
         echo '</table>';
-
 
         echo '</td>';
 

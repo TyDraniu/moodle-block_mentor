@@ -489,7 +489,7 @@ function block_fn_mentor_get_all_users($filter = '', $sessionfilter = false) {
     return $everyone;
 }
 
-function block_fn_mentor_get_mentees($mentorid, $courseid=0, $studentids = '', $groupid=0, $sessionfilter = false) {
+function block_fn_mentor_get_mentees($mentorid, $courseid = 0, $studentids = '', $groupid = 0, $sessionfilter = false) {
     global $DB;
 
     if (! $mentorroleid = get_config('block_fn_mentor', 'mentor_role_user')) {
@@ -561,7 +561,6 @@ function block_fn_mentor_get_mentees($mentorid, $courseid=0, $studentids = '', $
         $mentees = array_intersect_key($mentees, $studentids);
     }
 
-
     if (empty($studentids) && $gm = $DB->record_exists('block_fn_mentor_group_mem',
             ['teamleader' => 1, 'userid' => $mentorid, 'role' => 'M'])) {
         $sql = "SELECT gm2.userid studentid, u.firstname, u.lastname
@@ -629,7 +628,6 @@ function block_fn_mentor_get_group_mentees($mentorid, $groupid) {
     }
 
     return $mentees;
-
 }
 
 function block_fn_mentor_get_mentors($menteeid) {
@@ -664,7 +662,6 @@ function block_fn_mentor_get_mentors($menteeid) {
           ORDER BY u.firstname ASC";
 
     return $DB->get_records_sql($sql, array(CONTEXT_USER, $mentorroleid, $menteeid, $mentorsysroleid,  CONTEXT_SYSTEM));
-
 }
 
 function block_fn_mentor_isteacherinanycourse($userid=null) {
@@ -2635,7 +2632,7 @@ function block_fn_mentor_activity_progress($course, $menteeid, $modgradesarray) 
                                     } else if ($grade = $gradefunction($instance, $menteeid)) {
                                         if ($item->gradepass > 0) {
                                             if ($grade[$menteeid]->rawgrade >= $item->gradepass) {
-                                               // Passed.
+                                                // Passed.
                                                 ++$completedactivities;
                                             } else {
                                                 // Fail.
@@ -2905,7 +2902,7 @@ function block_fn_mentor_simplegradebook($course, $menteeuser, $modgradesarray) 
                                                 );
                                             }
                                         }
-                                    } else if ($modstatus = block_fn_mentor_assignment_status($mod, $key, true)) {
+                                    } else if ($modstatus = block_fn_mentor_assignment_status($mod, $key)) {
                                         switch ($modstatus) {
                                             case 'submitted':
                                                 if ($instance->grade == 0) {
@@ -3283,7 +3280,7 @@ function block_fn_mentor_users_has_active_enrollment() {
               FROM {course} c
               JOIN {enrol} en
                 ON en.courseid = c.id
-              JOIN {user_enrolments} ue 
+              JOIN {user_enrolments} ue
                 ON ue.enrolid = en.id
               JOIN {user} u
                 ON ue.userid = u.id
@@ -3309,9 +3306,9 @@ function block_fn_mentor_max_number_of_mentor($userids) {
               FROM (SELECT COUNT(ra2.id) numofmentor,
                            ctx.instanceid menteeid
                       FROM {context} ctx
-                      JOIN {role_assignments} ra2 
+                      JOIN {role_assignments} ra2
                         ON ctx.id = ra2.contextid
-                     WHERE ctx.instanceid {$sqlfilter} 
+                     WHERE ctx.instanceid {$sqlfilter}
                        AND ctx.contextlevel = ?
                        AND ra2.roleid = ?
                   GROUP BY ctx.instanceid) counts";
@@ -3356,7 +3353,7 @@ function block_fn_mentor_assign_mentor_to_user($mentorid, $userid) {
     return false;
 }
 
-function block_fn_mentor_uu_validate_user_upload_columns(csv_import_reader $cir, $stdfields, $profilefields, moodle_url $returnurl) {
+function block_fn_mentor_validate_user_upload_columns(csv_import_reader $cir, $stdfields, $profilefields, moodle_url $returnurl) {
     $columns = $cir->get_columns();
     if (empty($columns)) {
         $cir->close();
