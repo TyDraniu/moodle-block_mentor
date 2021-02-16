@@ -53,7 +53,7 @@ class fn_user_filtering {
     public $_closeform;
     /** @var \user_active_filter_form */
     public $_activeform;
-    /** @var text*/
+    /** @var string*/
     public $_filtertype;
 
     /**
@@ -149,26 +149,49 @@ class fn_user_filtering {
         global $USER, $CFG, $DB, $SITE;
 
         switch ($fieldname) {
-            case 'username':    return new user_filter_text('username', get_string('username'), $advanced, 'username');
-            case 'realname':    return new user_filter_text('realname', get_string('fullnameuser'), $advanced, $DB->sql_fullname());
-            case 'lastname':    return new user_filter_text('lastname', get_string('lastname'), $advanced, 'lastname');
-            case 'firstname':   return new user_filter_text('firstname', get_string('firstname'), $advanced, 'firstname');
-            case 'email':       return new user_filter_text('email', get_string('email'), $advanced, 'email');
-            case 'city':        return new user_filter_text('city', get_string('city'), $advanced, 'city');
-            case 'institution': return new user_filter_text('institution', get_string('institution'), $advanced, 'institution');
-            case 'country':     return new user_filter_select('country', get_string('country'), $advanced, 'country', get_string_manager()->get_list_of_countries(), $USER->country);
-            case 'confirmed':   return new user_filter_yesno('confirmed', get_string('confirmed', 'admin'), $advanced, 'confirmed');
-            case 'suspended':   return new user_filter_yesno('suspended', get_string('suspended', 'auth'), $advanced, 'suspended');
-            case 'profile':     return new user_filter_profilefield('profile', get_string('profilefields', 'admin'), $advanced);
-            case 'courserole':  return new user_filter_courserole('courserole', get_string('courserole', 'filters'), $advanced);
-            case 'systemrole':  return new user_filter_globalrole('systemrole', get_string('globalrole', 'role'), $advanced);
-            case 'firstaccess': return new user_filter_date('firstaccess', get_string('firstaccess', 'filters'), $advanced, 'firstaccess');
-            case 'lastaccess':  return new user_filter_date('lastaccess', get_string('lastaccess'), $advanced, 'lastaccess');
-            case 'neveraccessed': return new user_filter_checkbox('neveraccessed', get_string('neveraccessed', 'filters'), $advanced, 'firstaccess', ['lastaccess_sck', 'lastaccess_eck', 'firstaccess_eck', 'firstaccess_sck']);
-            case 'timemodified': return new user_filter_date('timemodified', get_string('lastmodified'), $advanced, 'timemodified');
-            case 'nevermodified': return new user_filter_checkbox('nevermodified', get_string('nevermodified', 'filters'), $advanced, array('timemodified', 'timecreated'), array('timemodified_sck', 'timemodified_eck'));
-            case 'cohort':      return new user_filter_cohort($advanced);
-            case 'idnumber':    return new user_filter_text('idnumber', get_string('idnumber'), $advanced, 'idnumber');
+            case 'username':
+                return new user_filter_text('username', get_string('username'), $advanced, 'username');
+            case 'realname':
+                return new user_filter_text('realname', get_string('fullnameuser'), $advanced, $DB->sql_fullname());
+            case 'lastname':
+                return new user_filter_text('lastname', get_string('lastname'), $advanced, 'lastname');
+            case 'firstname':
+                return new user_filter_text('firstname', get_string('firstname'), $advanced, 'firstname');
+            case 'email':
+                return new user_filter_text('email', get_string('email'), $advanced, 'email');
+            case 'city':
+                return new user_filter_text('city', get_string('city'), $advanced, 'city');
+            case 'institution':
+                return new user_filter_text('institution', get_string('institution'), $advanced, 'institution');
+            case 'country':
+                return new user_filter_select('country', get_string('country'), $advanced, 'country',
+                    get_string_manager()->get_list_of_countries(), $USER->country);
+            case 'confirmed':
+                return new user_filter_yesno('confirmed', get_string('confirmed', 'admin'), $advanced, 'confirmed');
+            case 'suspended':
+                return new user_filter_yesno('suspended', get_string('suspended', 'auth'), $advanced, 'suspended');
+            case 'profile':
+                return new user_filter_profilefield('profile', get_string('profilefields', 'admin'), $advanced);
+            case 'courserole':
+                return new user_filter_courserole('courserole', get_string('courserole', 'filters'), $advanced);
+            case 'systemrole':
+                return new user_filter_globalrole('systemrole', get_string('globalrole', 'role'), $advanced);
+            case 'firstaccess':
+                return new user_filter_date('firstaccess', get_string('firstaccess', 'filters'), $advanced, 'firstaccess');
+            case 'lastaccess':
+                return new user_filter_date('lastaccess', get_string('lastaccess'), $advanced, 'lastaccess');
+            case 'neveraccessed':
+                return new user_filter_checkbox('neveraccessed', get_string('neveraccessed', 'filters'), $advanced, 'firstaccess',
+                    ['lastaccess_sck', 'lastaccess_eck', 'firstaccess_eck', 'firstaccess_sck']);
+            case 'timemodified':
+                return new user_filter_date('timemodified', get_string('lastmodified'), $advanced, 'timemodified');
+            case 'nevermodified':
+                return new user_filter_checkbox('nevermodified', get_string('nevermodified', 'filters'), $advanced,
+                    ['timemodified', 'timecreated'], ['timemodified_sck', 'timemodified_eck']);
+            case 'cohort':
+                return new user_filter_cohort($advanced);
+            case 'idnumber':
+                return new user_filter_text('idnumber', get_string('idnumber'), $advanced, 'idnumber');
             case 'auth':
                 $plugins = core_component::get_plugin_list('auth');
                 $choices = array();

@@ -20,6 +20,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+global $CFG, $COURSE, $DB, $USER, $SITE, $PAGE, $OUTPUT;
+
 require_once('../../config.php');
 require_once($CFG->dirroot.'/blocks/fn_mentor/lib.php');
 require_once($CFG->dirroot.'/notes/lib.php');
@@ -30,7 +33,7 @@ require_once($CFG->dirroot.'/grade/report/user/lib.php');
 // Parameters.
 $menteeid      = optional_param('menteeid', 0, PARAM_INT);
 $courseid      = optional_param('courseid', 0, PARAM_INT);
-$groupid  = optional_param('groupid', 0, PARAM_INT);
+$groupid       = optional_param('groupid', 0, PARAM_INT);
 $navpage       = optional_param('page', 'overview', PARAM_TEXT);
 
 // Array of functions to call for grading purposes for modules.
@@ -173,7 +176,6 @@ $PAGE->set_heading($heading);
 $PAGE->set_cacheable(true);
 $PAGE->requires->css('/blocks/fn_mentor/css/styles.css');
 
-
 $PAGE->requires->js('/blocks/fn_mentor/textrotate.js');
 $PAGE->requires->js_init_call('textrotate_init', null, true);
 
@@ -212,26 +214,27 @@ $groupmenu = array();
 $groupmenuurl = array();
 $groupmenuhtml = '';
 
-$groupmenuurl[0] = $CFG->wwwroot.'/blocks/fn_mentor/course_overview_single.php?menteeid='.$menteeid.'&groupid=0';
-$groupmenu[$groupmenuurl[0]] = get_string('allmentorgroups', 'block_fn_mentor');
+$groupmenuurl[0] = new moodle_url('/blocks/fn_mentor/course_overview_single.php', ['menteeid' => $menteeid, 'groupid' => 0]);
+$groupmenu[$groupmenuurl[0]->out()] = get_string('allmentorgroups', 'block_fn_mentor');
 
 if (!empty($groups)) {
     foreach ($groups as $group) {
-        $groupmenuurl[$group->id] = $CFG->wwwroot . '/blocks/fn_mentor/course_overview_single.php?menteeid=' . $menteeid . '&groupid=' . $group->id;
-        $groupmenu[$groupmenuurl[$group->id]] = $group->name;
+        $groupmenuurl[$group->id] = new moodle_url('/blocks/fn_mentor/course_overview_single.php',
+                                        ['menteeid' => $menteeid, 'groupid' => $group->id]);
+        $groupmenu[$groupmenuurl[$group->id]->out()] = $group->name;
     }
 
     if ((!$isstudent) || ($isadmin || $ismentor)) {
         $groupmenuhtml = html_writer::tag('form',
-            html_writer::img(block_fn_mentor_pix_url('i/group'), get_string('group', 'block_fn_mentor')) . ' ' .
+            html_writer::img($OUTPUT->pix_url('i/group'), get_string('group', 'block_fn_mentor')) .
             html_writer::select(
                 $groupmenu, 'groupfilter', $groupmenuurl[$groupid], null,
-                array('onChange' => 'location=document.jump2.groupfilter.options[document.jump2.groupfilter.selectedIndex].value;')
+                ['onChange' => 'location=document.jump2.groupfilter.options[document.jump2.groupfilter.selectedIndex].value;']
             ),
-            array('id' => 'groupFilterForm', 'name' => 'jump2')
+            ['id' => 'groupFilterForm', 'name' => 'jump2']
         );
 
-        $groupmenuhtml = '<div class="mentee-course-overview-block-filter">' . $groupmenuhtml . ' </div>';
+        $groupmenuhtml = html_writer::div($groupmenuhtml, 'mentee-course-overview-block-filter');
     }
 }
 
@@ -239,16 +242,16 @@ if (!empty($groups)) {
 $studentmenu = array();
 $studentmenuurl = array();
 
-
 if ($showallstudents = get_config('block_fn_mentor', 'showallstudents')) {
-    $studentmenuurl[0] = $CFG->wwwroot . '/blocks/fn_mentor/all_students.php';
-    $studentmenu[$studentmenuurl[0]] = get_string('allstudents', 'block_fn_mentor');
+    $studentmenuurl[0] = new moodle_url('/blocks/fn_mentor/all_students.php');
+    $studentmenu[$studentmenuurl[0]->out()] = get_string('allstudents', 'block_fn_mentor');
 }
 
 if ($mentees) {
     foreach ($mentees as $mentee) {
-        $studentmenuurl[$mentee->studentid] = $CFG->wwwroot.'/blocks/fn_mentor/course_overview_single.php?menteeid='.$mentee->studentid.'&groupid='.$groupid;
-        $studentmenu[$studentmenuurl[$mentee->studentid]] = $mentee->firstname .' '.$mentee->lastname;
+        $studentmenuurl[$mentee->studentid] = new moodle_url('/blocks/fn_mentor/course_overview_single.php',
+            ['menteeid' => $mentee->studentid, 'groupid' => $groupid]);
+        $studentmenu[$studentmenuurl[$mentee->studentid]->out()] = $mentee->firstname .' '.$mentee->lastname;
     }
 }
 
@@ -256,15 +259,15 @@ $studentmenuhtml = '';
 
 if ((!$isstudent) || ($isadmin || $ismentor  || $isteacher)) {
     $studentmenuhtml = html_writer::tag('form',
-        html_writer::img(block_fn_mentor_pix_url('i/user'), get_string('user')).' '.
+        html_writer::img($OUTPUT->pix_url('i/user'), get_string('user')).
         html_writer::select(
             $studentmenu, 'studentfilter', $studentmenuurl[$menteeid], null,
-            array('onChange' => 'location=document.jump1.studentfilter.options[document.jump1.studentfilter.selectedIndex].value;')
+            ['onChange' => 'location=document.jump1.studentfilter.options[document.jump1.studentfilter.selectedIndex].value;']
         ),
-        array('id' => 'studentFilterForm', 'name' => 'jump1')
+        ['id' => 'studentFilterForm', 'name' => 'jump1']
     );
 
-    $studentmenuhtml = '<div class="mentee-course-overview-block-filter">'.$studentmenuhtml.'</div>';
+    $studentmenuhtml = html_writer::div($studentmenuhtml, "mentee-course-overview-block-filter");
 }
 
 // BLOCK-1.
@@ -285,8 +288,6 @@ echo $groupmenuhtml.$studentmenuhtml.'
           </div>
       </div>';
 
-
-
 $courselist = "";
 
 if ($courseid == 0) {
@@ -297,17 +298,17 @@ if ($courseid == 0) {
         $menteeid.'&groupid=' . $groupid.'&courseid=0">'.get_string('allcourses', 'block_fn_mentor').'</a></div>';
 }
 foreach ($enrolledcourses as $enrolledcourse) {
-    $course_fullname = format_string($enrolledcourse->fullname); //allow mlang filters to process language strings
-    
+    $coursefullname = format_string($enrolledcourse->fullname); // Allow mlang filters to process language strings.
+
     if ($courseid == $enrolledcourse->id) {
         $courselist .= '<div class="courselist active"><img class="mentees-course-bullet" src="'.
             $CFG->wwwroot.'/blocks/fn_mentor/pix/b.gif"><a href="'.$CFG->wwwroot.
             '/blocks/fn_mentor/course_overview_single.php?menteeid='.$menteeid.'&groupid=' . $groupid.
-            '&courseid='.$enrolledcourse->id.'">'.$course_fullname.'</a></div>';
+            '&courseid='.$enrolledcourse->id.'">'.$coursefullname.'</a></div>';
     } else {
         $courselist .= '<div class="courselist"><img class="mentees-course-bullet" src="'.$CFG->wwwroot.
             '/blocks/fn_mentor/pix/b.gif"><a href="'.$CFG->wwwroot.'/blocks/fn_mentor/course_overview_single.php?menteeid='.
-            $menteeid.'&groupid=' . $groupid.'&courseid='.$enrolledcourse->id.'">'.$course_fullname.'</a></div>';
+            $menteeid.'&groupid=' . $groupid.'&courseid='.$enrolledcourse->id.'">'.$coursefullname.'</a></div>';
     }
 }
 
@@ -342,13 +343,13 @@ if ($navpage == 'overview') {
 }
 
 // CENTER.
-$course_fullname = format_string($course->fullname); //allow mlang filters to process language strings
+$coursefullname = format_string($course->fullname); // Allow mlang filters to process language strings.
 echo '<div id="mentee-course-overview-center-single" class="block">'.
     '<div id="mentee-course-overview-center-menu-container">';
 echo '<div class="mentee-course-overview-center-course-title"><a  href="'.$CFG->wwwroot.'/course/view.php?id='.
     $course->id.'" onclick="window.open(\''.$CFG->wwwroot.'/course/view.php?id='.$course->id.
     '\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,directories=no,'.
-    'scrollbars=yes,resizable=yes\'); return false;" class="" >'.$course_fullname.'</a></div>';
+    'scrollbars=yes,resizable=yes\'); return false;" class="" >'.$coursefullname.'</a></div>';
 
 echo '<div class="mentee-course-overview-center-course-menu">
           <table class="mentee-menu">
@@ -421,7 +422,6 @@ if ($navpage == 'overview') {
                 $CFG->wwwroot.'/blocks/fn_mentor/pix/email.png"></a><br />'.
                 '<span class="mentee-lastaccess">'.$lastaccess.'</span></div>';
         }
-
     }
     echo '</table>';
     echo '</div>';
@@ -455,7 +455,6 @@ if ($navpage == 'overview') {
     // Progress.
     echo '<td valign="top" style="height: 100%;" class="mentee-blue-border">';
 
-
     echo '<table style="height: 100%; width: 100%;">';
     echo '<tr>';
     echo '<td class="overview-progress blue">';
@@ -468,8 +467,6 @@ if ($navpage == 'overview') {
     echo '</td>';
     echo '</tr>';
     echo '</table>';
-
-
 
     echo '</td>';
     // Grade.
@@ -515,7 +512,7 @@ if ($navpage == 'overview') {
             if ($value['numofweek']) {
                 foreach ($value['mod'] as $index => $imagelink) {
                     $longactivityname = $value['modname'][$index];
-                    $displayname= shorten_text($value['modname'][$index], 30);
+                    $displayname = shorten_text($value['modname'][$index], 30);
                     $formattedactivityname = format_string($displayname, true, array('context' => $context));
                     echo '<th scope="col" align="center">'.
                         '<span class="completion-activityname">'.
@@ -564,8 +561,6 @@ if ($navpage == 'overview') {
     } else {
         echo '<div class="mentees-error">'.get_string('no_activities', 'block_fn_mentor').'</div>';
     }
-
-
 
     echo "</div>";
         echo '</td>';
@@ -817,8 +812,6 @@ if ($navpage == 'overview') {
 
     $systemcontext = context_system::instance();
 
-    add_to_log($courseid, 'notes', 'view', 'index.php?course='.$courseid.'&amp;user='.$userid, 'view notes');
-
     $strnotes = get_string('notes', 'notes');
 
     if ($userid) {
@@ -869,7 +862,6 @@ if ($navpage == 'overview') {
     }
 
     echo $OUTPUT->box_end();
-
 }
 
 echo '</div>'; // Mentee course overview center single.

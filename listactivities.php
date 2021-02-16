@@ -129,7 +129,7 @@ if ($completion->is_enabled() && !empty($completion)) {
                         switch ($modstatus) {
                             case 'submitted':
                                 if ($instance->grade == 0) {
-                                    // Graded
+                                    // Graded.
                                     ++$completedactivities;
                                 } else if ($grade = $gradefunction($instance, $menteeid)) {
                                     if ($item->gradepass > 0) {
@@ -254,18 +254,17 @@ if ($show == 'completed') {
                         if ($submission = $DB->get_records('assign_submission', array(
                             'assignment' => $assignment->id, 'userid' => $menteeid), 'attemptnumber DESC', '*', 0, 1)
                          ) {
-                           $shownogradeassignment = true;
+                            $shownogradeassignment = true;
                         }
                     }
                 }
             }
 
-
             if ($activitystate == 1 || $activitystate == 2 || $shownogradeassignment) {
                 echo "<tr><td align='center'>\n";
                 $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
-                    "HEIGHT=\"16\" WIDTH=\"16\" >";
+                $modicon = "<img src=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
+                    "height=\"16\" width=\"16\" >";
                 echo ($modtype == 'assign') ? 'assignment' : $modtype;
                 echo "</td>\n";
                 echo "<td align='left'><a href='" . $CFG->wwwroot .
@@ -293,8 +292,8 @@ if ($show == 'completed') {
                     if ($assignmentstatus == 'submitted') {
                         echo "<tr><td align='center'>\n";
                         $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                        $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
-                            "HEIGHT=\"16\" WIDTH=\"16\" >";
+                        $modicon = "<img src=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
+                            "height=\"16\" width=\"16\" >";
                         echo ($modtype == 'assign') ? 'assignment' : $modtype;
                         echo "</td>\n";
                         echo "<td align='left'><a href='" .
@@ -308,8 +307,8 @@ if ($show == 'completed') {
                 } else {
                     echo "<tr><td align='center'>\n";
                     $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                    $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
-                        "HEIGHT=\"16\" WIDTH=\"16\" >";
+                    $modicon = "<img src=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
+                        "height=\"16\" width=\"16\" >";
                     echo ($modtype == 'assign') ? 'assignment' : $modtype;
                     echo "</td>\n";
                     echo "<td align='left'><a href='" .
@@ -338,8 +337,8 @@ if ($show == 'completed') {
                 }
                 echo "<tr><td align='center'>\n";
                 $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
-                    "HEIGHT=\"16\" WIDTH=\"16\" >";
+                $modicon = "<img src=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
+                    "height=\"16\" width=\"16\" >";
                 echo ($modtype == 'assign') ? 'assignment' : $modtype;
                 echo "</td>\n";
                 echo "<td align='left'><a href='" .
@@ -367,8 +366,8 @@ if ($show == 'completed') {
                         if ($assignmentstatus == 'waitinggrade') {
                             echo "<tr><td align='center'>\n";
                             $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                            $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
-                                "HEIGHT=\"16\" WIDTH=\"16\" >";
+                            $modicon = "<img src=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
+                                "height=\"16\" width=\"16\" >";
                             echo ($modtype == 'assign') ? 'assignment' : $modtype;
                             echo "</td>\n";
                             echo "<td align='left'><a href='" .
@@ -399,8 +398,8 @@ if ($show == 'completed') {
                         if ($assignmentstatus == 'saved') {
                             echo "<tr><td align='center'>\n";
                             $modtype = $DB->get_field('modules', 'name', array('id' => $activity->module));
-                            $modicon = "<IMG BORDER=0 VALIGN=absmiddle SRC=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
-                                "HEIGHT=\"16\" WIDTH=\"16\" >";
+                            $modicon = "<img src=\"$CFG->wwwroot/mod/$modtype/pix/icon.png\" ".
+                                "height=\"16\" width=\"16\" >";
                             echo ($modtype == 'assign') ? 'assignment' : $modtype;
                             echo "</td>\n";
                             echo "<td align='left'><a href='" .

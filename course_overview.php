@@ -283,17 +283,17 @@ if ($courseid == 0) {
         get_string('allcourses', 'block_fn_mentor').'</a></div>';
 }
 foreach ($enrolledcourses as $enrolledcourse) {
-       $course_fullname = format_string($enrolledcourse->fullname); //allow mlang filters to process language strings
+       $coursefullname = format_string($enrolledcourse->fullname); //allow mlang filters to process language strings
     if ($courseid == $enrolledcourse->id) {
         $courselist .= '<div class="courselist active">
             <img class="mentees-course-bullet" src="'.$CFG->wwwroot.'/blocks/fn_mentor/pix/b.gif">'.
             '<a href="'.$CFG->wwwroot.'/blocks/fn_mentor/course_overview_single.php?menteeid='.
-            $menteeid.'&courseid='.$enrolledcourse->id.'">'.$course_fullname.'</a></div>';
+            $menteeid.'&courseid='.$enrolledcourse->id.'">'.$coursefullname.'</a></div>';
     } else {
         $courselist .= '<div class="courselist">
             <img class="mentees-course-bullet" src="'.$CFG->wwwroot.'/blocks/fn_mentor/pix/b.gif">'.
             '<a href="'.$CFG->wwwroot.'/blocks/fn_mentor/course_overview_single.php?menteeid='.
-            $menteeid.'&courseid='.$enrolledcourse->id.'">'.$course_fullname.'</a></div>';
+            $menteeid.'&courseid='.$enrolledcourse->id.'">'.$coursefullname.'</a></div>';
     }
 }
 
@@ -361,7 +361,6 @@ if ($view = has_capability('block/fn_mentor:viewcoursenotes', context_system::in
         }
     }
 
-
     echo     '</div>
           </div>';
 }
@@ -373,7 +372,7 @@ echo '<div id="mentee-course-overview-center">';
 if ($enrolledcourses) {
 
     foreach ($enrolledcourses as $enrolledcourse) {
-        $course_fullname = format_string($enrolledcourse->fullname); //allow mlang filters to process language strings
+        $coursefullname = format_string($enrolledcourse->fullname); // Allow mlang filters to process language strings.
         
         if ($courseid && ($courseid <> $enrolledcourse->id)) {
             continue;
@@ -402,7 +401,7 @@ if ($enrolledcourses) {
             $enrolledcourse->id . '" onclick="window.open(\'' . $CFG->wwwroot . '/course/view.php?id=' .
             $enrolledcourse->id . '\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,'.
             'copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes\'); return false;" class="" >' .
-            $course_fullname . '</a></div>';
+            $coursefullname . '</a></div>';
 
         echo '<div class="overview-teacher">';
         echo '<table class="mentee-teacher-table">';

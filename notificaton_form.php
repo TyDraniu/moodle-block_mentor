@@ -237,8 +237,10 @@ class notification_form extends moodleform {
             html_writer::tag('p', $n2('n2', 'n2', '_checkbox', 1) . ' No activity for ' .
                 block_fn_mentor_textinput('n2_value', 'n2_value', '_textinput', $n2value) . ' days <N2>'
             ) .
-            html_writer::tag('p', $consecutive('consecutive', 'consecutive2', '_checkbox', 1) . ' Logged in for ' .
-                block_fn_mentor_textinput('consecutive_value', 'consecutive_value', '_textinput', $consecutivevalue) . ' consecutive days <N2>'
+            html_writer::tag('p',
+                $consecutive('consecutive', 'consecutive2', '_checkbox', 1) . ' Logged in for ' .
+                block_fn_mentor_textinput('consecutive_value', 'consecutive_value', '_textinput', $consecutivevalue).
+                ' consecutive days <N2>'
             )
         );
         $mform->addElement('html', '</td>');

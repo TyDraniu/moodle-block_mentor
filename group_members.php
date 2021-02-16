@@ -20,6 +20,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
 global $CFG, $DB, $PAGE, $SITE, $OUTPUT;
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
@@ -66,7 +67,6 @@ $PAGE->requires->string_for_js('pleaseselectamentor', 'block_fn_mentor');
 $PAGE->requires->jquery();
 $PAGE->requires->js('/blocks/fn_mentor/js/group_members.js?v='.time());
 $PAGE->requires->css('/blocks/fn_mentor/css/group_members.css?v='.time());
-
 
 switch ($potentialmentorfilter) {
     case 'all_mentors':
@@ -139,10 +139,12 @@ $selectedmentorlabel = new html_table_cell();
 $selectedmentorlabel->text = html_writer::tag('strong', get_string('groupmentors', 'block_fn_mentor'));
 
 $selectedmenteelabel = new html_table_cell();
-$selectedmenteelabel->text = html_writer::tag('strong', get_string('groupmentees', 'block_fn_mentor'), array('id' => 'selected-mentee-label'));
+$selectedmenteelabel->text = html_writer::tag('strong', get_string('groupmentees', 'block_fn_mentor'),
+    ['id' => 'selected-mentee-label']);
 
 $potentialmenteelabel = new html_table_cell();
-$potentialmenteelabel->text = html_writer::tag('strong', get_string('availablementees', 'block_fn_mentor'), array('id' => 'potential-mentee-label'));
+$potentialmenteelabel->text = html_writer::tag('strong', get_string('availablementees', 'block_fn_mentor'),
+    ['id' => 'potential-mentee-label']);
 
 // Header row.
 $table->data[] = new html_table_row(
@@ -242,8 +244,7 @@ $selectedmentorselect->text = html_writer::select($selectedmentoroptions, '', ''
         'value' => get_string('setgroupleader', 'block_fn_mentor'),
         'type' => 'button',
         'id' => 'btn-group-leader-toggle',
-        'class' => 'btn btn-secondary',
-        //'data-toggle' => 'button'
+        'class' => 'btn btn-secondary'
     )
 );
 
