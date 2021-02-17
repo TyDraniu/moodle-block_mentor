@@ -166,7 +166,7 @@ if ((!$isstudent) || ($isadmin || $ismentor  || $isteacher)) {
     $studentmenuhtml = html_writer::tag('form',
         html_writer::span(get_string('select_student', 'block_fn_mentor')).
         html_writer::select(
-            $studentmenu, 'sortby', $studentmenuurl[0], null,
+            $studentmenu, 'sortby', '', null,
             array('onChange' => 'location=document.jump1.sortby.options[document.jump1.sortby.selectedIndex].value;')
         ),
         array('id' => 'studentFilterForm', 'name' => 'jump1')

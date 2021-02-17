@@ -94,7 +94,7 @@ class fn_user_filtering {
         $extraparams['returnurl'] = $returnurl;
 
         // Fist the new filter form.
-        $this->_addform = new fn_user_add_filter_form($baseurl, array('fields' => $this->_fields, 'extraparams' => $extraparams));
+        $this->_addform = new fn_user_add_filter_form($baseurl, ['fields' => $this->_fields, 'extraparams' => $extraparams]);
         if ($adddata = $this->_addform->get_data()) {
             foreach ($this->_fields as $fname => $field) {
                 $data = $field->check_data($adddata);
@@ -108,13 +108,13 @@ class fn_user_filtering {
             }
             // Clear the form.
             $_POST = array();
-            $this->_addform = new fn_user_add_filter_form($baseurl, array('fields' => $this->_fields, 'extraparams' => $extraparams));
+            $this->_addform = new fn_user_add_filter_form($baseurl, ['fields' => $this->_fields, 'extraparams' => $extraparams]);
         }
 
         $this->_closeform = new fn_user_close_filter_form($returnurl);
 
         // Now the active filters.
-        $this->_activeform = new fn_user_active_filter_form($baseurl, array('fields' => $this->_fields, 'extraparams' => $extraparams));
+        $this->_activeform = new fn_user_active_filter_form($baseurl, ['fields' => $this->_fields, 'extraparams' => $extraparams]);
         if ($adddata = $this->_activeform->get_data()) {
             if (!empty($adddata->removeall)) {
                 $SESSION->$filtersession = array();
@@ -134,7 +134,8 @@ class fn_user_filtering {
             }
             // Clear+reload the form.
             $_POST = array();
-            $this->_activeform = new fn_user_active_filter_form($baseurl, array('fields' => $this->_fields, 'extraparams' => $extraparams));
+            $this->_activeform = new fn_user_active_filter_form($baseurl,
+                                    ['fields' => $this->_fields, 'extraparams' => $extraparams]);
         }
         // Now the active filters.
     }
@@ -226,7 +227,11 @@ class fn_user_filtering {
                 if (count($choices) < 2) {
                     return null; // Filter not needed.
                 }
-                return new user_filter_simpleselect('mnethostid', get_string('mnetidprovider', 'mnet'), $advanced, 'mnethostid', $choices);
+                return new user_filter_simpleselect('mnethostid',
+                                                    get_string('mnetidprovider', 'mnet'),
+                                                    $advanced,
+                                                    'mnethostid',
+                                                    $choices);
 
             default:
                 return null;

@@ -48,7 +48,7 @@ class fn_group_form extends moodleform {
         $this->add_action_buttons(true, get_string('submit', 'block_fn_mentor'));
     }
 
-    function validation($data, $files) {
+    public function validation($data, $files) {
         global $DB;
 
         $errors = array();

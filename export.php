@@ -20,8 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 global $CFG, $PAGE, $SITE, $DB, $OUTPUT;
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');

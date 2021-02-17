@@ -48,7 +48,6 @@ class export_form extends moodleform {
     }
 
     public function validation($data, $files) {
-        $errors = array();
-        return $errors;
+        return parent::validation($data, $files);
     }
 }

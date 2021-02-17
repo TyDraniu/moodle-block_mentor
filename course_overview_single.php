@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
 global $CFG, $COURSE, $DB, $USER, $SITE, $PAGE, $OUTPUT;
 
 require_once('../../config.php');
@@ -226,9 +225,9 @@ if (!empty($groups)) {
 
     if ((!$isstudent) || ($isadmin || $ismentor)) {
         $groupmenuhtml = html_writer::tag('form',
-            html_writer::img($OUTPUT->pix_url('i/group'), get_string('group', 'block_fn_mentor')) .
+            html_writer::img($OUTPUT->image_url('i/group'), get_string('group', 'block_fn_mentor')) .
             html_writer::select(
-                $groupmenu, 'groupfilter', $groupmenuurl[$groupid], null,
+                $groupmenu, 'groupfilter', $groupmenuurl[$groupid]->out(), null,
                 ['onChange' => 'location=document.jump2.groupfilter.options[document.jump2.groupfilter.selectedIndex].value;']
             ),
             ['id' => 'groupFilterForm', 'name' => 'jump2']
@@ -259,9 +258,9 @@ $studentmenuhtml = '';
 
 if ((!$isstudent) || ($isadmin || $ismentor  || $isteacher)) {
     $studentmenuhtml = html_writer::tag('form',
-        html_writer::img($OUTPUT->pix_url('i/user'), get_string('user')).
+        html_writer::img($OUTPUT->image_url('i/user'), get_string('user')).
         html_writer::select(
-            $studentmenu, 'studentfilter', $studentmenuurl[$menteeid], null,
+            $studentmenu, 'studentfilter', $studentmenuurl[$menteeid]->out(), null,
             ['onChange' => 'location=document.jump1.studentfilter.options[document.jump1.studentfilter.selectedIndex].value;']
         ),
         ['id' => 'studentFilterForm', 'name' => 'jump1']

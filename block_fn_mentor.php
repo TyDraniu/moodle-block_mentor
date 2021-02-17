@@ -111,17 +111,20 @@ class block_fn_mentor extends block_base {
 
         // SORT SELECT.
         $sortbyurl = array(
-            'mentor' => $CFG->wwwroot.'/'.$indexphp.'?coursefilter='.$coursefilter.'&groupfilter='.$groupfilter.'&sortby=mentor',
-            'mentee' => $CFG->wwwroot.'/'.$indexphp.'?coursefilter='.$coursefilter.'&groupfilter='.$groupfilter.'&sortby=mentee'
+            'mentor' => new moodle_url('/'.$indexphp,
+                ['coursefilter' => $coursefilter, 'groupfilter' => $groupfilter, 'sortby' => 'mentor']),
+            'mentee' => new moodle_url('/'.$indexphp,
+                ['coursefilter' => $coursefilter, 'groupfilter' => $groupfilter, 'sortby' => 'mentee'])
         );
         $sortmenu = array(
-            $sortbyurl['mentor'] => get_config('block_fn_mentor', 'mentor'),
-            $sortbyurl['mentee'] => get_config('block_fn_mentor', 'mentee')
+            $sortbyurl['mentor']->out() => get_config('block_fn_mentor', 'mentor'),
+            $sortbyurl['mentee']->out() => get_config('block_fn_mentor', 'mentee')
         );
 
         // COURSE SELECT.
         $courseurl = array(
-            0 => new moodle_url('/'. $indexphp, ['coursefilter' => 0, 'groupfilter' => $groupfilter, 'sortby' => $sortby, 'showall' => $showall])
+            0 => new moodle_url('/'. $indexphp,
+                ['coursefilter' => 0, 'groupfilter' => $groupfilter, 'sortby' => $sortby, 'showall' => $showall])
         );
         $coursemenu = array($courseurl[0]->out() => get_string('all_courses', 'block_fn_mentor'));
 
@@ -250,7 +253,7 @@ class block_fn_mentor extends block_base {
         if (($isteacher || $isadmin) && (isset($this->config->show_mentor_sort) && $this->config->show_mentor_sort)) {
             $this->content->text .= html_writer::tag('form',
                 get_string('sortby', 'block_fn_mentor') . ' ' .
-                html_writer::select($sortmenu, 'sortby', $sortbyurl[$sortby], null,
+                html_writer::select($sortmenu, 'sortby', $sortbyurl[$sortby]->out(), null,
                     array('onChange' => 'location=document.jump1.sortby.options[document.jump1.sortby.selectedIndex].value;')
                 ),
                 array('id' => 'sortbyForm', 'name' => 'jump1'));
