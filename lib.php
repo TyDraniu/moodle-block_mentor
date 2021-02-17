@@ -121,25 +121,25 @@ function block_fn_mentor_get_students_without_mentor($filter = '', $sessionfilte
     $params['roleid'] = $studentroleid;
     $params['numofmentor'] = 0;
 
-    $sql = "SELECT u.id, u.firstname, u.lastname,
-                   (SELECT COUNT(1)
-                      FROM {context} ctx
-                      JOIN {role_assignments} ra2
-                        ON ctx.id = ra2.contextid
-                     WHERE ctx.contextlevel = :contextlevel
-                       AND ra2.roleid = :roleid2
-                       AND ctx.instanceid = ra.userid) numofmentor
-              FROM {role_assignments} ra
-              JOIN {user} u
-                ON ra.userid = u.id
-             WHERE u.deleted = :deleted
-               AND u.suspended = :suspended
-               AND ra.roleid = :roleid
-                   $extrasql
-                   $wherecondions
-          GROUP BY ra.userid
-            HAVING numofmentor = :numofmentor
-          ORDER BY u.firstname ASC";
+    $sql = "with x AS
+            (SELECT u.id, u.firstname, u.lastname,
+            (SELECT COUNT(1)
+            FROM {context} ctx
+            JOIN {role_assignments} ra2
+            ON ctx.id = ra2.contextid
+            WHERE ctx.contextlevel = :contextlevel
+            AND ra2.roleid = :roleid2
+            AND ctx.instanceid = u.id) numofmentor
+            FROM {role_assignments} ra
+            JOIN {user} u ON ra.userid = u.id
+            WHERE u.deleted = :deleted
+            AND u.suspended = :suspended
+            AND ra.roleid = :roleid
+            GROUP BY u.id, u.firstname, u.lastname)
+            select id, firstname, lastname
+            from x
+            WHERE x.numofmentor = :numofmentor
+            ORDER BY x.firstname ASC";
 
     return $DB->get_records_sql($sql, $params);
 }
@@ -246,25 +246,26 @@ function block_fn_mentor_get_mentors_without_mentee($filter = '', $sessionfilter
     ORDER BY FirstName ASC
     */
 
-    $sql = "SELECT u.id, u.firstname, u.lastname,
-                   (SELECT COUNT(1)
-                      FROM {context} ctx
-                      JOIN {role_assignments} ra2
-                        ON ctx.id = ra2.contextid
-                     WHERE ctx.contextlevel = :contextlevel
-                       AND ra2.roleid = :roleid2
-                       AND ra2.userid = ra.userid) AS numofmentee
-              FROM {role_assignments} ra
-              JOIN {user} u
-                ON ra.userid = u.id
-             WHERE u.deleted = :deleted
-               AND u.suspended = :suspended
-               AND ra.roleid = :roleid
+
+
+    $sql = "select x.id, x.firstname, x.lastname
+                from (SELECT u.id, u.firstname, u.lastname,
+                (SELECT COUNT(1)
+                FROM {context} ctx
+                JOIN {role_assignments} ra2 ON ctx.id = ra2.contextid
+                WHERE ctx.contextlevel = :contextlevel
+                AND ra2.roleid = :roleid2
+                AND ra2.userid = u.id) AS numofmentee
+                FROM {role_assignments} ra
+                JOIN {user} u ON ra.userid = u.id
+                WHERE u.deleted = :deleted
+                AND u.suspended = :suspended
+                AND ra.roleid = :roleid
                    $extrasql
                    $wherecondions
-          GROUP BY ra.userid
-            HAVING numofmentee = :numofmentee
-          ORDER BY u.firstname ASC";
+                GROUP BY u.id, u.firstname, u.lastname) x
+                WHERE x.numofmentee = :numofmentee
+                ORDER BY x.firstname ASC";
 
     return $DB->get_records_sql($sql, $params);
 }
@@ -326,21 +327,19 @@ function block_fn_mentor_get_mentors_without_groups($filter = '', $sessionfilter
     $params['numofgroups'] = 0;
 
     $sql = "SELECT u.id,
-                   u.firstname,
-                   u.lastname,
-                   (SELECT Count(1) FROM {block_fn_mentor_group_mem} gm
-                     WHERE gm.userid = u.id AND gm.role = 'M') numofgroups
-              FROM {role_assignments} ra
-        INNER JOIN {user} u
-                ON ra.userid = u.id
-             WHERE u.deleted = :deleted
-               AND u.suspended = :suspended
-               AND ra.roleid = :roleid
+                u.firstname,
+                u.lastname
+                FROM {role_assignments} ra
+                INNER JOIN {user} u ON ra.userid = u.id
+                LEFT OUTER JOIN {block_fn_mentor_group_mem} gm ON gm.userid = u.id AND gm.role = 'M'
+                WHERE u.deleted = :deleted
+                AND u.suspended = :suspended
+                AND ra.roleid = :roleid
                    $extrasql
                    $wherecondions
-          GROUP BY ra.userid
-            HAVING numofgroups = :numofgroups
-          ORDER BY u.firstname ASC";
+                GROUP BY u.id, u.firstname, u.lastname
+                HAVING count(gm.*) = :numofgroups
+                ORDER BY u.firstname ASC";
 
     return $DB->get_records_sql($sql, $params);
 }
@@ -1286,9 +1285,12 @@ function block_fn_mentor_print_grade_summary ($courseid , $studentid) {
     $html .= '<td class="overview-grade-right '.$class.'" valign="middle">'.$gradesummary->courseaverage.'%</td>';
     $html .= '</tr>';
     if ($courseaverage == false) {
-        $warningimg = '<img class="actionicon" width="16" height="16" alt="" src="'.block_fn_mentor_pix_url('i/warning', '').'"> ';
+        $warningimg = html_writer::img($OUTPUT->image_url('i/warning', ''), "", ['class' => 'actionicon', 'width' => '16', 'height' => '16']);
         $html .= '<tr>';
-        $html .= '<td colspan="2" class="overview-grade-right-warning" valign="middle">'.$warningimg.get_string('nocoursetotal', 'block_fn_mentor').'</td>';
+        $html .= '<td colspan="2" class="overview-grade-right-warning">'.
+            $warningimg.
+            get_string('nocoursetotal', 'block_fn_mentor').
+            '</td>';
         $html .= '</tr>';
     }
     $html .= '</table>';
