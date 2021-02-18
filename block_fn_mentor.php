@@ -117,8 +117,8 @@ class block_fn_mentor extends block_base {
                 ['coursefilter' => $coursefilter, 'groupfilter' => $groupfilter, 'sortby' => 'mentee'])
         );
         $sortmenu = array(
-            $sortbyurl['mentor']->out() => get_config('block_fn_mentor', 'mentor'),
-            $sortbyurl['mentee']->out() => get_config('block_fn_mentor', 'mentee')
+            $sortbyurl['mentor']->out(false) => get_config('block_fn_mentor', 'mentor'),
+            $sortbyurl['mentee']->out(false) => get_config('block_fn_mentor', 'mentee')
         );
 
         // COURSE SELECT.
@@ -126,7 +126,7 @@ class block_fn_mentor extends block_base {
             0 => new moodle_url('/'. $indexphp,
                 ['coursefilter' => 0, 'groupfilter' => $groupfilter, 'sortby' => $sortby, 'showall' => $showall])
         );
-        $coursemenu = array($courseurl[0]->out() => get_string('all_courses', 'block_fn_mentor'));
+        $coursemenu = array($courseurl[0]->out(false) => get_string('all_courses', 'block_fn_mentor'));
 
         $filtercourses = array();
 
@@ -183,9 +183,9 @@ class block_fn_mentor extends block_base {
 
             if ($courses = $DB->get_records_sql($sqlcourse, array(1, 1))) {
                 foreach ($courses as $course) {
-                    $courseurl[$course->id] = $CFG->wwwroot.'/'.$indexphp.'?coursefilter='.
-                        $course->id.'&groupfilter='.$groupfilter.'&sortby='.$sortby.'&showall='.$showall;
-                    $coursemenu[$courseurl[$course->id]] = $course->fullname;
+                    $courseurl[$course->id] = new moodle_url('/'.$indexphp,
+                        ['coursefilter' => $course->id, 'groupfilter' => $groupfilter, 'sortby' => $sortby, 'showall' => $showall]);
+                    $coursemenu[$courseurl[$course->id]->out(false)] = $course->fullname;
                 }
             }
         } else if ($isteacher) { // Course - Teacher.
@@ -194,14 +194,14 @@ class block_fn_mentor extends block_base {
 
                     if ($filtercourses) {
                         if (in_array($course->id, $filtercourses)) {
-                            $courseurl[$course->id] = $CFG->wwwroot.'/'.$indexphp.'?coursefilter='.
-                                $course->id.'&groupfilter='.$groupfilter.'&sortby='.$sortby.'&showall='.$showall;
-                            $coursemenu[$courseurl[$course->id]] = $course->fullname;
+                            $courseurl[$course->id] = new moodle_url('/'.$indexphp,
+                                ['coursefilter' => $course->id, 'groupfilter' => $groupfilter, 'sortby' => $sortby, 'showall' => $showall]);
+                            $coursemenu[$courseurl[$course->id]->out(false)] = $course->fullname;
                         }
                     } else {
-                        $courseurl[$course->id] = $CFG->wwwroot.'/'.$indexphp.'?coursefilter='.
-                            $course->id.'&groupfilter='.$groupfilter.'&sortby='.$sortby.'&showall='.$showall;
-                        $coursemenu[$courseurl[$course->id]] = $course->fullname;
+                        $courseurl[$course->id] = new moodle_url('/'.$indexphp,
+                            ['coursefilter' => $course->id, 'groupfilter' => $groupfilter, 'sortby' => $sortby, 'showall' => $showall]);
+                        $coursemenu[$courseurl[$course->id]->out(false)] = $course->fullname;
                     }
                 }
             }
@@ -230,14 +230,14 @@ class block_fn_mentor extends block_base {
                         foreach ($courses as $course) {
                             if ($filtercourses) {
                                 if (in_array($course->id, $filtercourses)) {
-                                    $courseurl[$course->id] = $CFG->wwwroot.'/'.$indexphp.'?coursefilter='.
-                                        $course->id.'&groupfilter='.$groupfilter.'&sortby='.$sortby.'&showall='.$showall;
-                                    $coursemenu[$courseurl[$course->id]] = $course->fullname;
+                                    $courseurl[$course->id] = new moodle_url('/'.$indexphp,
+                                        ['coursefilter' => $course->id, 'groupfilter' => $groupfilter, 'sortby' => $sortby, 'showall' => $showall]);
+                                    $coursemenu[$courseurl[$course->id]->out(false)] = $course->fullname;
                                 }
                             } else {
-                                $courseurl[$course->id] = $CFG->wwwroot.'/'.$indexphp.'?coursefilter='.
-                                    $course->id.'&groupfilter='.$groupfilter.'&sortby='.$sortby.'&showall='.$showall;
-                                $coursemenu[$courseurl[$course->id]] = $course->fullname;
+                                $courseurl[$course->id] = new moodle_url('/'.$indexphp,
+                                    ['coursefilter' => $course->id, 'groupfilter' => $groupfilter, 'sortby' => $sortby, 'showall' => $showall]);
+                                $coursemenu[$courseurl[$course->id]->out(false)] = $course->fullname;
                             }
                         }
                     }
@@ -253,7 +253,7 @@ class block_fn_mentor extends block_base {
         if (($isteacher || $isadmin) && (isset($this->config->show_mentor_sort) && $this->config->show_mentor_sort)) {
             $this->content->text .= html_writer::tag('form',
                 get_string('sortby', 'block_fn_mentor') . ' ' .
-                html_writer::select($sortmenu, 'sortby', $sortbyurl[$sortby]->out(), null,
+                html_writer::select($sortmenu, 'sortby', $sortbyurl[$sortby]->out(false), null,
                     array('onChange' => 'location=document.jump1.sortby.options[document.jump1.sortby.selectedIndex].value;')
                 ),
                 array('id' => 'sortbyForm', 'name' => 'jump1'));
@@ -265,7 +265,7 @@ class block_fn_mentor extends block_base {
                 0 => new moodle_url('/'. $indexphp,
                     ['coursefilter' => $coursefilter, 'groupfilter' => 0, 'sortby' => $sortby, 'showall' => $showall])
             );
-            $groupmenu = array($groupurl[0]->out() => get_string('allmentorgroups', 'block_fn_mentor'));
+            $groupmenu = array($groupurl[0]->out(false) => get_string('allmentorgroups', 'block_fn_mentor'));
             if ($isadmin) {
                 $groups = $DB->get_records('block_fn_mentor_group', null, 'name ASC');
             } else if ($ismentor) {
@@ -282,7 +282,7 @@ class block_fn_mentor extends block_base {
                 foreach ($groups as $group) {
                     $groupurl[$group->id] = new moodle_url('/'. $indexphp,
                         ['coursefilter' => $coursefilter, 'groupfilter' => $group->id, 'sortby' => $sortby, 'showall' => $showall]);
-                    $groupmenu[$groupurl[$group->id]->out()] = $group->name;
+                    $groupmenu[$groupurl[$group->id]->out(false)] = $group->name;
                 }
                 $this->content->text .= html_writer::tag('form',
                     html_writer::img($OUTPUT->image_url('i/group', ''), get_string('group', 'block_fn_mentor')) .
@@ -301,7 +301,7 @@ class block_fn_mentor extends block_base {
             $this->content->text .= html_writer::tag('form',
                 html_writer::img($OUTPUT->image_url('i/course', ''), get_string('course', 'block_fn_mentor')) .
 
-                html_writer::select($coursemenu, 'coursefilter', $courseurl[$coursefilter], null,
+                html_writer::select($coursemenu, 'coursefilter', $courseurl[$coursefilter]->out(false), null,
                     array('onChange' => 'location=document.jump2.coursefilter.'.
                         'options[document.jump2.coursefilter.selectedIndex].value;'
                     )

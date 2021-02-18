@@ -214,20 +214,20 @@ $groupmenuurl = array();
 $groupmenuhtml = '';
 
 $groupmenuurl[0] = new moodle_url('/blocks/fn_mentor/course_overview_single.php', ['menteeid' => $menteeid, 'groupid' => 0]);
-$groupmenu[$groupmenuurl[0]->out()] = get_string('allmentorgroups', 'block_fn_mentor');
+$groupmenu[$groupmenuurl[0]->out(false)] = get_string('allmentorgroups', 'block_fn_mentor');
 
 if (!empty($groups)) {
     foreach ($groups as $group) {
         $groupmenuurl[$group->id] = new moodle_url('/blocks/fn_mentor/course_overview_single.php',
                                         ['menteeid' => $menteeid, 'groupid' => $group->id]);
-        $groupmenu[$groupmenuurl[$group->id]->out()] = $group->name;
+        $groupmenu[$groupmenuurl[$group->id]->out(false)] = $group->name;
     }
 
     if ((!$isstudent) || ($isadmin || $ismentor)) {
         $groupmenuhtml = html_writer::tag('form',
             html_writer::img($OUTPUT->image_url('i/group'), get_string('group', 'block_fn_mentor')) .
             html_writer::select(
-                $groupmenu, 'groupfilter', $groupmenuurl[$groupid]->out(), null,
+                $groupmenu, 'groupfilter', $groupmenuurl[$groupid]->out(false), null,
                 ['onChange' => 'location=document.jump2.groupfilter.options[document.jump2.groupfilter.selectedIndex].value;']
             ),
             ['id' => 'groupFilterForm', 'name' => 'jump2']
@@ -243,14 +243,14 @@ $studentmenuurl = array();
 
 if ($showallstudents = get_config('block_fn_mentor', 'showallstudents')) {
     $studentmenuurl[0] = new moodle_url('/blocks/fn_mentor/all_students.php');
-    $studentmenu[$studentmenuurl[0]->out()] = get_string('allstudents', 'block_fn_mentor');
+    $studentmenu[$studentmenuurl[0]->out(false)] = get_string('allstudents', 'block_fn_mentor');
 }
 
 if ($mentees) {
     foreach ($mentees as $mentee) {
         $studentmenuurl[$mentee->studentid] = new moodle_url('/blocks/fn_mentor/course_overview_single.php',
             ['menteeid' => $mentee->studentid, 'groupid' => $groupid]);
-        $studentmenu[$studentmenuurl[$mentee->studentid]->out()] = $mentee->firstname .' '.$mentee->lastname;
+        $studentmenu[$studentmenuurl[$mentee->studentid]->out(false)] = $mentee->firstname .' '.$mentee->lastname;
     }
 }
 
@@ -260,7 +260,7 @@ if ((!$isstudent) || ($isadmin || $ismentor  || $isteacher)) {
     $studentmenuhtml = html_writer::tag('form',
         html_writer::img($OUTPUT->image_url('i/user'), get_string('user')).
         html_writer::select(
-            $studentmenu, 'studentfilter', $studentmenuurl[$menteeid]->out(), null,
+            $studentmenu, 'studentfilter', $studentmenuurl[$menteeid]->out(false), null,
             ['onChange' => 'location=document.jump1.studentfilter.options[document.jump1.studentfilter.selectedIndex].value;']
         ),
         ['id' => 'studentFilterForm', 'name' => 'jump1']

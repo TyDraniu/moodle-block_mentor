@@ -181,7 +181,6 @@ function block_fn_mentor_is_mentor($userid) {
                AND ra.userid = ?";
 
     return $DB->record_exists_sql($sql, array($mentorroleid, $userid));
-
 }
 
 function block_fn_mentor_get_mentors_without_mentee($filter = '', $sessionfilter = false) {
@@ -218,35 +217,6 @@ function block_fn_mentor_get_mentors_without_mentee($filter = '', $sessionfilter
     $params['suspended'] = 0;
     $params['roleid'] = $mentorroleid;
     $params['numofmentee'] = 0;
-
-    /*
-    with MenteeCount(id, FirstName, LastName, Mentee)
-    as
-    (SELECT u.id, u.firstname, u.lastname,
-    (SELECT COUNT(1)
-    FROM {context} ctx
-    JOIN {role_assignments} ra2
-    ON ctx.id = ra2.contextid
-    WHERE ctx.contextlevel = :contextlevel
-       AND ra2.roleid = :roleid2
-       AND ra2.userid = ra.userid) AS Mentees
-    from {role_assignments} ra
-    JOIN {user} u
-    ON ra.userid = u.id
-     WHERE u.deleted = :deleted
-               AND u.suspended = :suspended
-               AND ra.roleid = :roleid
-                   $extrasql
-                   $wherecondions
-    GROUP BY u.id
-    )
-    select id, FirstName, LastName, Mentee
-    from MenteeCount
-    where Mentees = 0
-    ORDER BY FirstName ASC
-    */
-
-
 
     $sql = "select x.id, x.firstname, x.lastname
                 from (SELECT u.id, u.firstname, u.lastname,
@@ -509,7 +479,10 @@ function block_fn_mentor_get_mentees($mentorid, $courseid = 0, $studentids = '',
                                   ON ra.userid = u.id
                                WHERE ctx.contextlevel = ?
                                  AND ra.roleid = ?
-                                 AND ctx.instanceid = ?";
+                                 AND ctx.instanceid = ?
+                            GROUP BY ra.userid, u.firstname, u.lastname
+							ORDER BY ra.userid";
+
         $coursestudents = $DB->get_records_sql($sqlcoursestudents, array(50, $studentrole, $courseid));
     }
     if ($groupid && $groupmetees = block_fn_mentor_get_group_members($groupid, 'U')) {
@@ -1285,7 +1258,8 @@ function block_fn_mentor_print_grade_summary ($courseid , $studentid) {
     $html .= '<td class="overview-grade-right '.$class.'" valign="middle">'.$gradesummary->courseaverage.'%</td>';
     $html .= '</tr>';
     if ($courseaverage == false) {
-        $warningimg = html_writer::img($OUTPUT->image_url('i/warning', ''), "", ['class' => 'actionicon', 'width' => '16', 'height' => '16']);
+        $warningimg = html_writer::img($OUTPUT->image_url('i/warning', ''), "",
+                                    ['class' => 'actionicon', 'width' => '16', 'height' => '16']);
         $html .= '<tr>';
         $html .= '<td colspan="2" class="overview-grade-right-warning">'.
             $warningimg.
@@ -1652,11 +1626,10 @@ function block_fn_mentor_single_button_form ($class, $url, $hiddens, $buttontext
     return html_writer::div(
         html_writer::tag('form',
             html_writer::div(
-                html_writer::empty_tag('input', ['name' => 'sesskey', 'value' => sesskey()]) .
                 $hiddeninputs .
                 html_writer::empty_tag('input',
                     ['class' => 'singlebutton', 'onclick' => $onclick, 'type' => 'submit', 'value' => $buttontext])
-            ), ['action' => $url, 'method' => 'post']),
+            ), ['action' => $url->out(), 'method' => 'post']),
         $class);
 }
 
@@ -1690,15 +1663,16 @@ function block_fn_mentor_render_notification_rule_table($notification, $number) 
     );
     $html .= block_fn_mentor_single_button_form (
         'create_new_rule',
-        new moodle_url('/blocks/fn_mentor/notification.php',
-            array('id' => $notification->id, 'action' => 'edit')
-        ), null, get_string('open', 'block_fn_mentor')
+        new moodle_url('/blocks/fn_mentor/notification.php', ['id' => $notification->id, 'action' => 'edit']),
+        null,
+        get_string('open', 'block_fn_mentor')
     );
     $html .= block_fn_mentor_single_button_form (
         'create_new_rule',
-        new moodle_url('/blocks/fn_mentor/notification_delete.php',
-            array('id' => $notification->id, 'action' => 'edit')
-        ), null, get_string('delete', 'block_fn_mentor'), 'return confirm(\'Do you want to delete record?\')'
+        new moodle_url('/blocks/fn_mentor/notification_delete.php', ['id' => $notification->id, 'action' => 'edit']),
+        null,
+        get_string('delete', 'block_fn_mentor'),
+        'return confirm(\'' . get_string('confirm_delete', 'block_fn_mentor') .  '\')'
     );
 
     $html .= '</td>
@@ -2002,8 +1976,8 @@ function block_fn_mentor_note_print($note, $detail = NOTES_SHOW_FULL) {
     $systemcontext = context_system::instance();
 
     $authoring = new stdClass();
-    $authoring->name = '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$author->id.'&amp;course='.
-        $note->courseid.'">'.fullname($author).'</a>';
+    $authoring->name = html_writer::link(new moodle_url('/user/view.php', ['id' => $author->id, 'course' => $note->courseid]),
+                                            fullname($author));
     $authoring->date = userdate($note->lastmodified);
 
     echo '<div class="notepost '. $note->publishstate . 'notepost' .

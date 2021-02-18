@@ -148,20 +148,20 @@ $groupmenuurl = array();
 $groupmenuhtml = '';
 
 $groupmenuurl[0] = new moodle_url('/blocks/fn_mentor/course_overview.php', ['menteeid' => $menteeid, 'groupid' => 0]);
-$groupmenu[$groupmenuurl[0]->out()] = get_string('allmentorgroups', 'block_fn_mentor');
+$groupmenu[$groupmenuurl[0]->out(false)] = get_string('allmentorgroups', 'block_fn_mentor');
 
 if (!empty($groups)) {
     foreach ($groups as $group) {
         $groupmenuurl[$group->id] = new moodle_url('/blocks/fn_mentor/course_overview.php',
             ['menteeid' => $menteeid, 'groupid' => $group->id]);
-        $groupmenu[$groupmenuurl[$group->id]->out()] = $group->name;
+        $groupmenu[$groupmenuurl[$group->id]->out(false)] = $group->name;
     }
 
     if ((!$isstudent) || ($isadmin || $ismentor)) {
         $groupmenuhtml = html_writer::tag('form',
             html_writer::img($OUTPUT->image_url('i/group'), get_string('group', 'block_fn_mentor')) . ' ' .
             html_writer::select(
-                $groupmenu, 'groupfilter', $groupmenuurl[$groupid]->out(), null,
+                $groupmenu, 'groupfilter', $groupmenuurl[$groupid]->out(false), null,
                 array('onChange' => 'location=document.jump2.groupfilter.options[document.jump2.groupfilter.selectedIndex].value;')
             ),
             array('id' => 'groupFilterForm', 'name' => 'jump2')
@@ -185,7 +185,7 @@ if ($mentees) {
     foreach ($mentees as $mentee) {
         $studentmenuurl[$mentee->studentid] = new moodle_url('/blocks/fn_mentor/course_overview.php',
             ['menteeid' => $mentee->studentid,'groupid' => $groupid]);
-        $studentmenu[$studentmenuurl[$mentee->studentid]->out()] = $mentee->firstname .' '.$mentee->lastname;
+        $studentmenu[$studentmenuurl[$mentee->studentid]->out(false)] = $mentee->firstname .' '.$mentee->lastname;
     }
 }
 
@@ -195,7 +195,7 @@ if ((!$isstudent) || ($isadmin || $ismentor  || $isteacher)) {
     $studentmenuhtml = html_writer::tag('form',
         html_writer::img($OUTPUT->image_url('i/user'), get_string('user')).' '.
         html_writer::select(
-            $studentmenu, 'studentfilter', $studentmenuurl[$menteeid]->out(), null,
+            $studentmenu, 'studentfilter', $studentmenuurl[$menteeid]->out(false), null,
             array('onChange' => 'location=document.jump1.studentfilter.options[document.jump1.studentfilter.selectedIndex].value;')
         ),
         array('id' => 'studentFilterForm', 'name' => 'jump1')
@@ -347,16 +347,16 @@ if ($view = has_capability('block/fn_mentor:viewcoursenotes', context_system::in
             }
             // Show all notes.
             echo '<a  href="'.$CFG->wwwroot.'/notes/index.php?user='.$menteeuser->id.
-                '"onclick="window.open(\''.$CFG->wwwroot.'/notes/index.php?user='.
+                ' "onclick="window.open(\''.$CFG->wwwroot.'/notes/index.php?user='.
                 $menteeuser->id.'\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,'.
-                'directories=no,scrollbars=yes,resizable=yes\'); return false;" class="" >'.
+                'directories=no,scrollbars=yes,resizable=yes\'); return false;">'.
                 get_string('show_all_notes', 'block_fn_mentor').'</a>';
         } else {
             // Add a note.
             echo '<a  href="'.$CFG->wwwroot.'/notes/index.php?user='.$menteeuser->id.
-                '"onclick="window.open(\''.$CFG->wwwroot.'/notes/index.php?user='.
+                ' "onclick="window.open(\''.$CFG->wwwroot.'/notes/index.php?user='.
                 $menteeuser->id.'\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,'.
-                'directories=no,scrollbars=yes,resizable=yes\'); return false;" class="" >'.
+                'directories=no,scrollbars=yes,resizable=yes\'); return false;">'.
                 get_string('add_a_note', 'block_fn_mentor').'</a>';
         }
     }
