@@ -496,6 +496,10 @@
     padding: 10px;
     width: 900px;
 }
+.notification-wrapper .rule-button {
+    padding: 10px;
+}
+
 #page-blocks-fn_mentor-notification table.notification > tbody > tr > th,
 #page-blocks-fn_mentor-course_overview table.notification > tbody > tr > th,
 #page-blocks-fn_mentor-course_overview_single table.notification > tbody > tr > th {
