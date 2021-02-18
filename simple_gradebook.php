@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
 global $CFG, $DB, $SESSION;
 
 require_once(dirname(__FILE__) . '/../../config.php');
@@ -85,7 +84,6 @@ $cobject->modnamesplural = &$modnamesplural;
 $cobject->modnamesused = &$modnamesused;
 $cobject->sections = &$sections;
 
-
 // Find current week.
 $courseformatoptions = course_get_format($course)->get_format_options();
 if (isset($courseformatoptions['numsections'])) {
@@ -106,7 +104,6 @@ $courseenddate = $course->startdate + ($weekofseconds * $coursenumsections);
 // Calculate the current week based on today's date and the starting date of the course.
 $currentweek = ($timenow > $course->startdate) ? (int) ((($timenow - $course->startdate) / $weekofseconds) + 1) : 0;
 $currentweek = min($currentweek, $coursenumsections);
-
 
 // Search through all the modules, pulling out grade data.
 $sections = get_fast_modinfo($course->id)->get_section_info_all();
@@ -143,7 +140,6 @@ for ($i = 0; $i < $upto; $i++) {
                 if (file_exists($libfile)) {
                     require_once($libfile);
                     $gradefunction = $mod->modname . "_get_user_grades";
-
 
                     if ((($mod->modname != 'forum') || ($instance->assessed > 0))
                         && isset($modgradesarray[$mod->modname])) {
@@ -244,7 +240,6 @@ for ($i = 0; $i < $upto; $i++) {
     $weekactivitycount[$i]['numofweek'] = $numberofitem;
 }
 
-
 echo '<div class="tablecontainer">';
 // TABLE.
 echo "<table class='simplegradebook'>";
@@ -307,7 +302,6 @@ foreach ($simplegradebook as $studentid => $studentreport) {
     } else {
         echo '<td class="red"> - </td>';
     }
-
 
     foreach ($studentreport['grade'] as $sgrades) {
         foreach ($sgrades as $sgrade) {

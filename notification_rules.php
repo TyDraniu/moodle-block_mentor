@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+global $CFG, $DB, $SITE, $PAGE, $OUTPUT;
+
 require_once('../../config.php');
 require_once($CFG->dirroot . '/blocks/fn_mentor/lib.php');
 require_once($CFG->dirroot . '/blocks/fn_mentor/notificaton_form.php');
@@ -58,8 +60,8 @@ $PAGE->navbar->add(get_string('notification_rules', 'block_fn_mentor'),
 
 echo $OUTPUT->header();
 
-echo '<div id="notification-wrapper">';
-echo '<h1>' . get_string('notification_rules', 'block_fn_mentor') . '</h1>';
+echo html_writer::start_div("notification-wrapper");
+echo html_writer::tag('h1', get_string('notification_rules', 'block_fn_mentor'));
 
 if ($notificationrules = $DB->get_records('block_fn_mentor_notific')) {
     $rulenumber = 0;
@@ -69,19 +71,18 @@ if ($notificationrules = $DB->get_records('block_fn_mentor_notific')) {
     }
 }
 
-$hiddenfields = array(
-    'id' => -1,
-    'action' => 'sendall',
-    'sesskey' => sesskey(),
-);
-echo block_fn_mentor_single_button_form ('runallrules',
-    new moodle_url('/blocks/fn_mentor/notification_send.php'), $hiddenfields,
+echo block_fn_mentor_single_button_form ('rule-button',
+    new moodle_url('/blocks/fn_mentor/notification_send.php'),
+    ['id' => -1, 'action' => 'sendall', 'sesskey' => sesskey()],
     get_string('runallrules', 'block_fn_mentor')
 );
-echo block_fn_mentor_single_button_form ('create_new_rule',
-    new moodle_url('/blocks/fn_mentor/notification.php'), null, get_string('create_new_rule', 'block_fn_mentor')
+echo block_fn_mentor_single_button_form ('rule-button',
+    new moodle_url('/blocks/fn_mentor/notification.php'),
+    null,
+    get_string('create_new_rule', 'block_fn_mentor')
 );
-echo '</div>';
+
+echo html_writer::end_div();
 
 echo block_fn_mentor_footer();
 
