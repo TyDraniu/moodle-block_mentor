@@ -316,3 +316,4 @@ $string['allpassed'] = 'All passed';
 $string['somefailed'] = 'Some failed';
 $string['allfailed'] = 'All failed';
 $string['nocoursesfinished'] = 'No courses finished';
+$string['confirm_delete'] = 'Do you want to delete record?';
