@@ -277,11 +277,12 @@ echo $groupmenuhtml.$studentmenuhtml.'
           </div>
           <div class="mentee-course-overview-block-content">'.
     $OUTPUT->container($OUTPUT->user_picture($menteeuser, array('courseid' => $COURSE->id)), "userimage").
-    $OUTPUT->container('<a href="'.$CFG->wwwroot.'/user/view.php?id='.$menteeuser->id.'&course=1" onclick="window.open(\''.
-        $CFG->wwwroot.'/user/view.php?id='.$menteeuser->id.'&course=1\', \'\', \'width=800,height=600,toolbar=no,location=no,'.
-        'menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes\'); return false;" class="" >'.
-        fullname($menteeuser, true).'</a>&nbsp;&nbsp;<a href="'.$CFG->wwwroot.'/message/index.php?id='.$menteeuser->id .
+
+    $OUTPUT->container(block_fn_mentor_render_link_with_window(new moodle_url('/user/profile.php', ['id' => $menteeuser->id]),
+        fullname($menteeuser, true)).
+        '&nbsp;&nbsp;<a href="'.$CFG->wwwroot.'/message/index.php?id='.$menteeuser->id .
         '"><img src="'.$CFG->wwwroot.'/blocks/fn_mentor/pix/email.png"></a>', "userfullname").
+
     '<span class="mentee-lastaccess">'.$lastaccess.'</span>' .
     '
           </div>
@@ -345,10 +346,10 @@ if ($navpage == 'overview') {
 $coursefullname = format_string($course->fullname); // Allow mlang filters to process language strings.
 echo '<div id="mentee-course-overview-center-single" class="block">'.
     '<div id="mentee-course-overview-center-menu-container">';
-echo '<div class="mentee-course-overview-center-course-title"><a  href="'.$CFG->wwwroot.'/course/view.php?id='.
-    $course->id.'" onclick="window.open(\''.$CFG->wwwroot.'/course/view.php?id='.$course->id.
-    '\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,directories=no,'.
-    'scrollbars=yes,resizable=yes\'); return false;" class="" >'.$coursefullname.'</a></div>';
+echo '<div class="mentee-course-overview-center-course-title">'.
+    block_fn_mentor_render_link_with_window(new moodle_url('/course/view.php', ['id' => $course->id]),
+            $coursefullname).
+'</div>';
 
 echo '<div class="mentee-course-overview-center-course-menu">
           <table class="mentee-menu">
@@ -411,14 +412,10 @@ if ($navpage == 'overview') {
             $lastaccess = get_string('lastaccess').get_string('labelsep', 'langconfig').
                 block_fn_mentor_format_time(time() - $teacher->lastaccess);
 
-            echo '<div><a onclick="window.open(\''.$CFG->wwwroot.'/user/profile.php?id='.$teacher->id.
-                '\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,directories=no,'.
-                'scrollbars=yes,resizable=yes\'); return false;" href="'.$CFG->wwwroot.'/user/profile.php?id='.
-                $teacher->id.'">' . $teacher->firstname.' '.$teacher->lastname.'</a><a onclick="window.open(\''.
-                $CFG->wwwroot.'/message/index.php?id='.$teacher->id.'\', \'\', \'width=800,height=600,toolbar=no,location=no,'.
-                'menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes\'); return false;" href="'.
-                $CFG->wwwroot.'/user/profile.php?id='.$teacher->id.'"><img src="'.
-                $CFG->wwwroot.'/blocks/fn_mentor/pix/email.png"></a><br />'.
+            echo '<div>'. block_fn_mentor_render_link_with_window(new moodle_url('/user/profile.php', ['id' => $teacher->id]),
+            $teacher->firstname.' '.$teacher->lastname).
+                block_fn_mentor_render_link_with_window(new moodle_url('/message/index.php', ['id' => $teacher->id]),
+                 html_writer::img($OUTPUT->image_url('email', 'block_fn_mentor'), 'email')). '<br />'.
                 '<span class="mentee-lastaccess">'.$lastaccess.'</span></div>';
         }
     }
@@ -436,15 +433,13 @@ if ($navpage == 'overview') {
             $lastaccess = get_string('lastaccess').get_string('labelsep',
                     'langconfig'). block_fn_mentor_format_time(time() - $mentor->lastaccess);
 
-            echo '<div><a onclick="window.open(\''.$CFG->wwwroot.'/user/profile.php?id='.$mentor->mentorid.
-                '\', \'\', \'width=620,height=450,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,directories=no,'.
-                'scrollbars=yes,resizable=yes\'); return false;" href="'.$CFG->wwwroot.'/user/profile.php?id='.
-                $mentor->mentorid.'">' . $mentor->firstname.' '.$mentor->lastname.'</a><a onclick="window.open(\''.
-                $CFG->wwwroot.'/message/index.php?id='.$mentor->mentorid.'\', \'\', \'width=620,height=450,toolbar=no,'.
-                'location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,'.
-                'resizable=yes\'); return false;" href="'.$CFG->wwwroot.'/user/profile.php?id='.$mentor->mentorid.'"><img src="'.
-                $CFG->wwwroot.'/blocks/fn_mentor/pix/email.png"></a><br />'.
-                '<span class="mentee-lastaccess">'.$lastaccess.'</span></div>';
+            echo '<div>'.
+                block_fn_mentor_render_link_with_window(new moodle_url('/user/profile.php', ['id' => $mentor->mentorid]),
+                            $mentor->firstname.' '.$mentor->lastname).
+                block_fn_mentor_render_link_with_window(new moodle_url('/message/index.php', ['id' => $mentor->mentorid]),
+                html_writer::img($OUTPUT->image_url('email', 'block_fn_mentor'), 'email')).
+               '<br />'.
+               '<span class="mentee-lastaccess">'.$lastaccess.'</span></div>';
         }
         echo '</td></tr>';
     }
@@ -571,13 +566,10 @@ if ($navpage == 'overview') {
         echo '<table class="simple-gradebook">';
         echo '<tr>';
         echo '<td class="blue">'.get_string('notes', 'block_fn_mentor');
-        echo '<div class="fz_popup_wrapper_single">
-                  <a  href="'.$CFG->wwwroot.'/notes/index.php?user='.$menteeuser->id.'"
-                                        onclick="window.open(\''.$CFG->wwwroot.'/notes/index.php?user='.
-            $menteeuser->id.'\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,'.
-            'directories=no,scrollbars=yes,resizable=yes\'); return false;" class="" ><img src="'.
-            $CFG->wwwroot.'/blocks/fn_mentor/pix/popup_icon.gif"></a>
-              </div>';
+        echo '<div class="fz_popup_wrapper_single">'.
+            block_fn_mentor_render_link_with_window(new moodle_url('/notes/index.php', ['user' => $menteeuser->id]),
+            html_writer::img($OUTPUT->image_url('popup_icon', 'block_fn_mentor'), '')).
+              '</div>';
         echo '</td>';
         echo '</tr>';
         echo '<tr>';
@@ -615,16 +607,12 @@ if ($navpage == 'overview') {
                     block_fn_mentor_note_print($note, NOTES_SHOW_FULL);
                 }
                 // Show all notes.
-                echo '<a  href="'.$CFG->wwwroot.'/notes/index.php?user='.$menteeuser->id.'" onclick="window.open(\''.
-                    $CFG->wwwroot.'/notes/index.php?user='.$menteeuser->id.'\', \'\', \'width=800,height=600,toolbar=no,'.
-                    'location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes\'); '.
-                    'return false;" class="" >'.get_string('show_all_notes', 'block_fn_mentor').'</a>';
+                echo block_fn_mentor_render_link_with_window(new moodle_url('/notes/index.php', ['user' => $menteeuser->id]),
+                    get_string('show_all_notes', 'block_fn_mentor'));
             } else {
                 // Add a note.
-                echo '<a  href="'.$CFG->wwwroot.'/notes/index.php?user='.$menteeuser->id.'" onclick="window.open(\''.
-                    $CFG->wwwroot.'/notes/index.php?user='.$menteeuser->id.'\', \'\', \'width=800,height=600,toolbar=no,'.
-                    'location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes\'); '.
-                    'return false;" class="" >'.get_string('add_a_note', 'block_fn_mentor').'</a>';
+                echo block_fn_mentor_render_link_with_window(new moodle_url('/notes/index.php', ['user' => $menteeuser->id]),
+                    get_string('add_a_note', 'block_fn_mentor'));
             }
         }
 

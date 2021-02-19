@@ -20,8 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 global $OUTPUT, $DB, $CFG, $USER, $SITE, $PAGE;
 
 require_once('../../config.php');
@@ -782,7 +780,6 @@ foreach ($columns as $column) {
     }
 }
 
-
 $table = new html_table();
 $table->attributes = array('class' => 'course-completion');
 
@@ -792,12 +789,10 @@ foreach ($columns as $column) {
     $table->wrap[$column] = '';
     if (strpos($column, 'completion') === 0) {
         $cid = (int)str_replace('completion', '', $column);
-        $headcell = new html_table_cell("<a class='sort-course-link' onclick=\"window.open('".
-            $CFG->wwwroot."/course/view.php?id=".$cid.
-            "', '', 'width=800,height=600,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,".
-            "directories=no,scrollbars=yes,resizable=yes'); return false;\" href=\"".
-            $CFG->wwwroot."/course/view.php?id=".$cid."\">".
-            $$column."</a>"
+        $headcell = new html_table_cell(block_fn_mentor_render_link_with_window(
+            new moodle_url('/course/view.php', ['id' => $cid]),
+            $$column,
+            ['class' => 'sort-course-link'])
         );
         if ($sortcourseid == $cid) {
             $headcell->attributes = array('class' => 'header header-yellow');

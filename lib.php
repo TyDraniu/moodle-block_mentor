@@ -741,6 +741,16 @@ function block_fn_mentor_get_mentees_by_mentor($courseid=0, $filter='', $mentori
     return $data;
 }
 
+function block_fn_mentor_render_link_with_window($moodleurl, $urltext, array $params = null) {
+    $p = $params;
+    $p['onclick'] = 'window.open(\''.
+            $moodleurl.'\', \'\', \'width=800,height=600,toolbar=no,location=no,'.
+            'menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes\');'.
+            'return false;';
+
+    return html_writer::link($moodleurl, $urltext, $p);
+}
+
 function block_fn_mentor_render_mentees_by_mentor($data, $show) {
     global $OUTPUT;
 
@@ -752,11 +762,7 @@ function block_fn_mentor_render_mentees_by_mentor($data, $show) {
 
         $html .= html_writer::div(
             html_writer::nonempty_tag('strong',
-            html_writer::link($mentorurl, $mentor['mentor']->firstname . ' ' . $mentor['mentor']->lastname,
-                ['onclick' => 'window.open(\''.
-                    $mentorurl.'\', \'\', \'width=800,height=600,toolbar=no,location=no,'.
-                    'menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes\');'.
-                    'return false;'])
+                block_fn_mentor_render_link_with_window($mentorurl, $mentor['mentor']->firstname . ' ' . $mentor['mentor']->lastname)
             ), 'mentor'
         );
 
@@ -863,12 +869,9 @@ function block_fn_mentor_render_mentors_by_mentee($data) {
 
             $html .= html_writer::div(
                 html_writer::img($OUTPUT->image_url('mentor_bullet', 'block_fn_mentor'), '', ['class' => 'mentee-img']) .
-                        html_writer::link($mentorurl, $mentor->firstname . ' ' . $mentor->lastname,
-                            ['class' => 'mentor-profile',
-                            'onclick' => 'window.open(\''.
-                                $mentorurl.'\', \'\', \'width=800,height=600,toolbar=no,location=no,'.
-                                'menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes\');'.
-                                'return false;']),
+                        block_fn_mentor_render_link_with_window($mentorurl,
+                            $mentor->firstname . ' ' . $mentor->lastname,
+                            ['class' => 'mentor-profile']),
                     'mentor'
             );
         }
@@ -1866,10 +1869,10 @@ function block_fn_mentor_report_outline_print_row($mod, $instance, $result) {
     echo "<td valign=\"top\">$image</td>";
     echo "<td valign=\"top\" style=\"width:300px\">";
 
-    echo "<a title=\"$mod->modfullname\"  href=\"$CFG->wwwroot/mod/$mod->modname/view.php?id=$mod->id\" ".
-        "onclick=\"window.open('$CFG->wwwroot/mod/$mod->modname/view.php?id=$mod->id', '', ".
-        "'width=800,height=600,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,directories=no,".
-        "scrollbars=yes,resizable=yes'); return false;\" class=\"\" >".format_string($instance->name, true)."</a></td>";
+    echo block_fn_mentor_render_link_with_window(
+        new moodle_url('/mod/'. $mod->modname. '/view.php', ['id' => $mod->id]),
+        format_string($instance->name, true), ['title' => $mod->modfullname]).
+        '</td>';
 
     echo "<td>&nbsp;&nbsp;&nbsp;</td>";
     echo "<td valign=\"top\">";
@@ -2652,24 +2655,20 @@ function block_fn_mentor_activity_progress($course, $menteeid, $modgradesarray) 
         $waitingforgrade = get_string('waitingforgrade', 'block_fn_mentor');
 
         // Completed.
-        $progressdata->content->items[] = '<a  href="' . $CFG->wwwroot . '/blocks/fn_mentor/listactivities.php?id=' .
-            $course->id . '&menteeid=' . $menteeid . '&show=completed' . '&navlevel=top" onclick="window.open(\''.
-            $CFG->wwwroot.'/blocks/fn_mentor/listactivities.php?id='.$course->id.'&menteeid='.$menteeid.
-            '&show=completed'.'&navlevel=top\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,copyhistory=no,'.
-            'status=no,directories=no,scrollbars=yes,resizable=yes\'); return false;" class="">' .
-            $completedactivities . ' '.$completed.'</a>';
+        $progressdata->content->items[] = block_fn_mentor_render_link_with_window(
+                new moodle_url('/blocks/fn_mentor/listactivities.php',
+                            ['id' => $course->id, 'menteeid' => $menteeid, 'show' => 'completed','navlevel' => 'top']),
+            $completedactivities . ' '.$completed);
 
         $progressdata->content->icons[] = '<img src="' . $CFG->wwwroot .
             '/blocks/fn_mentor/pix/completed.gif" class="icon" alt="">';
 
         // Incomplete.
         if ($numgradetopass && $incompletedactivities > 0) {
-            $progressdata->content->items[] = '<a  href="' . $CFG->wwwroot . '/blocks/fn_mentor/listactivities.php?id=' .
-                $course->id . '&menteeid=' . $menteeid . '&show=incompleted' . '&navlevel=top" onclick="window.open(\''.
-                $CFG->wwwroot.'/blocks/fn_mentor/listactivities.php?id='.$course->id.'&menteeid='.$menteeid.
-                '&show=incompleted'.'&navlevel=top\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,'.
-                'copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes\'); return false;" class="">' .
-                $incompletedactivities . ' '.$incompleted.'</a>';
+            $progressdata->content->items[] = block_fn_mentor_render_link_with_window(
+                new moodle_url('/blocks/fn_mentor/listactivities.php',
+                    ['id' => $course->id, 'menteeid' => $menteeid, 'show' => 'incompleted', 'navlevel' => 'top']),
+                $incompletedactivities . ' '.$incompleted);
 
             $progressdata->content->icons[] = '<img src="' . $CFG->wwwroot .
                 '/blocks/fn_mentor/pix/incomplete.gif" class="icon" alt="">';
@@ -2677,35 +2676,29 @@ function block_fn_mentor_activity_progress($course, $menteeid, $modgradesarray) 
 
         // Draft.
         if ($savedactivities > 0) {
-            $progressdata->content->items[] = '<a  href="' . $CFG->wwwroot . '/blocks/fn_mentor/listactivities.php?id=' .
-                $course->id . '&menteeid=' . $menteeid . '&show=draft' . '&navlevel=top" onclick="window.open(\''.
-                $CFG->wwwroot.'/blocks/fn_mentor/listactivities.php?id='.$course->id.'&menteeid='.$menteeid.
-                '&show=draft'.'&navlevel=top\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,copyhistory=no,'.
-                'status=no,directories=no,scrollbars=yes,resizable=yes\'); return false;" class="">' .
-                $savedactivities . ' '.$draft.'</a>';
+            $progressdata->content->items[] = block_fn_mentor_render_link_with_window(
+                new moodle_url('/blocks/fn_mentor/listactivities.php',
+                    ['id' => $course->id, 'menteeid' => $menteeid, 'show' => 'draft', 'navlevel' => 'top']),
+                $savedactivities . ' '.$draft);
 
             $progressdata->content->icons[] = '<img src="' . $CFG->wwwroot .
                 '/blocks/fn_mentor/pix/saved.gif" class="icon" alt="">';
         }
 
         // Not Attempted.
-        $progressdata->content->items[] = '<a  href="' . $CFG->wwwroot . '/blocks/fn_mentor/listactivities.php?id=' .
-            $course->id . '&menteeid=' . $menteeid . '&show=notattempted' . '&navlevel=top" onclick="window.open(\''.
-            $CFG->wwwroot.'/blocks/fn_mentor/listactivities.php?id='.$course->id.'&menteeid='.$menteeid.
-            '&show=notattempted'.'&navlevel=top\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,'.
-            'copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes\'); return false;" class="">' .
-            $notattemptedactivities . ' '.$notattempted.'</a>';
+        $progressdata->content->items[] = block_fn_mentor_render_link_with_window(
+            new moodle_url('/blocks/fn_mentor/listactivities.php',
+                ['id' => $course->id, 'menteeid' => $menteeid, 'show' => 'notattempted', 'navlevel'=> 'top']),
+            $notattemptedactivities . ' '.$notattempted);
 
         $progressdata->content->icons[] = '<img src="' . $CFG->wwwroot .
             '/blocks/fn_mentor/pix/notattempted.gif" class="icon" alt="">';
 
         // Waiting for grade.
-        $progressdata->content->items[] = '<a  href="' . $CFG->wwwroot . '/blocks/fn_mentor/listactivities.php?id=' .
-            $course->id . '&menteeid=' . $menteeid . '&show=waitingforgrade' . '&navlevel=top" onclick="window.open(\''.
-            $CFG->wwwroot.'/blocks/fn_mentor/listactivities.php?id='.$course->id.'&menteeid='.$menteeid.
-            '&show=waitingforgrade'.'&navlevel=top\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,'.
-            'copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes\'); return false;" class="">' .
-            $waitingforgradeactivities . ' '.$waitingforgrade.'</a>';
+        $progressdata->content->items[] = block_fn_mentor_render_link_with_window(
+            new moodle_url('/blocks/fn_mentor/listactivities.php',
+                ['id' => $course->id, 'menteeid' => $menteeid, 'show' => 'waitingforgrade', 'navlevel'=> 'top']),
+            $waitingforgradeactivities . ' '.$waitingforgrade);
 
         $progressdata->content->icons[] = '<img src="' . $CFG->wwwroot .
             '/blocks/fn_mentor/pix/unmarked.gif" class="icon" alt="">';
@@ -3129,20 +3122,18 @@ function block_fn_mentor_get_setting_courses () {
 }
 
 function block_fn_mentor_teacher_link($userid, $lastaccess) {
-    global $DB, $CFG;
+    global $DB, $OUTPUT;
 
     if (!$user = $DB->get_record('user', array('id' => $userid))) {
         return '';
     }
-    return '<div><a onclick="window.open(\'' . $CFG->wwwroot . '/user/profile.php?id=' .
-    $user->id . '\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,copyhistory=no,'.
-    'status=no,directories=no,scrollbars=yes,resizable=yes\'); return false;" href="' . $CFG->wwwroot .
-    '/user/profile.php?id=' . $user->id . '">' . $user->firstname . ' ' . $user->lastname .
-    '</a><a onclick="window.open(\'' . $CFG->wwwroot . '/message/index.php?id=' . $user->id .
-    '\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,'.
-    'directories=no,scrollbars=yes,resizable=yes\'); return false;" href="' . $CFG->wwwroot .
-    '/user/profile.php?id=' . $user->id . '"><img src="' . $CFG->wwwroot .
-    '/blocks/fn_mentor/pix/email.png"></a><br />' .
+    return '<div>'. block_fn_mentor_render_link_with_window(
+                new moodle_url('/user/profile.php', ['id' => $user->id]),
+                $user->firstname . ' ' . $user->lastname).
+        block_fn_mentor_render_link_with_window(
+            new moodle_url('/message/index.php', ['id' => $user->id]),
+        html_writer::img($OUTPUT->image_url('email', 'block_fn_mentor'), 'email')).
+    '<br />' .
     '<span class="mentee-lastaccess">' . $lastaccess . '</span></div>';
 }
 

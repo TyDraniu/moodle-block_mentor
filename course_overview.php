@@ -184,7 +184,7 @@ if ($showallstudents = get_config('block_fn_mentor', 'showallstudents')) {
 if ($mentees) {
     foreach ($mentees as $mentee) {
         $studentmenuurl[$mentee->studentid] = new moodle_url('/blocks/fn_mentor/course_overview.php',
-            ['menteeid' => $mentee->studentid,'groupid' => $groupid]);
+            ['menteeid' => $mentee->studentid, 'groupid' => $groupid]);
         $studentmenu[$studentmenuurl[$mentee->studentid]->out(false)] = $mentee->firstname .' '.$mentee->lastname;
     }
 }
@@ -212,13 +212,11 @@ echo $groupmenuhtml.$studentmenuhtml.'
           </div>
           <div class="mentee-course-overview-block-content">'.
     $OUTPUT->container($OUTPUT->user_picture($menteeuser, array('courseid' => $COURSE->id)), "userimage").
-    $OUTPUT->container('<a  href="'.$CFG->wwwroot.'/user/view.php?id='.$menteeuser->id.'&course=1" '.
-        'onclick="window.open(\''.$CFG->wwwroot.'/user/view.php?id='.$menteeuser->id.
-        '&course=1\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,'.
-        'directories=no,scrollbars=yes,resizable=yes\'); return false;" class="" >'.fullname($menteeuser, true).'</a>'.
-        '&nbsp;&nbsp;<a href="'.$CFG->wwwroot.'/message/index.php?id='.$menteeuser->id.'" ><img src="'.$CFG->wwwroot.
-        '/blocks/fn_mentor/pix/email.png"></a>', "userfullname"
-    ).
+    $OUTPUT->container(block_fn_mentor_render_link_with_window(new moodle_url('/user/profile.php', ['id' => $menteeuser->id]),
+            fullname($menteeuser, true)).
+        '&nbsp;&nbsp;'.
+    html_writer::link(new moodle_url('/message/index.php', ['id' => $menteeuser->id]),
+        html_writer::img($OUTPUT->image_url('email', 'block_fn_mentor'), 'email')), ['class' => 'userfullname']).
     '<span class="mentee-lastaccess">'.$lastaccess.'</span>' .
     '</div></div>';
 
@@ -315,14 +313,11 @@ if ($view = has_capability('block/fn_mentor:viewcoursenotes', context_system::in
               <div class="mentee-course-overview-block-title">
                   '.get_string('notes', 'block_fn_mentor').'
               </div>
-              <div class="fz_popup_wrapper">
-                  <a  href="'.$CFG->wwwroot.'/notes/index.php?user='.$menteeuser->id.'"
-                  onclick="window.open(\''.$CFG->wwwroot.'/notes/index.php?user='.
-                  $menteeuser->id.'\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,copyhistory=no,'.
-                  'status=no,directories=no,scrollbars=yes,resizable=yes\'); return false;"
-                                        class="" ><img src="'.$CFG->wwwroot.'/blocks/fn_mentor/pix/popup_icon.gif"></a>
-              </div>
-              <div class="mentee-course-overview-block-content">';
+              <div class="fz_popup_wrapper">'.
+        block_fn_mentor_render_link_with_window(new moodle_url('/notes/index.php', ['user' => $menteeuser->id]),
+                  html_writer::img($OUTPUT->image_url('popup_icon', 'block_fn_mentor'), '')).
+              '</div>'.
+              '<div class="mentee-course-overview-block-content">';
 
     // COURSE NOTES.
     if ($courseids && $view) {
@@ -346,18 +341,12 @@ if ($view = has_capability('block/fn_mentor:viewcoursenotes', context_system::in
                 block_fn_mentor_note_print($note, NOTES_SHOW_FULL);
             }
             // Show all notes.
-            echo '<a  href="'.$CFG->wwwroot.'/notes/index.php?user='.$menteeuser->id.
-                ' "onclick="window.open(\''.$CFG->wwwroot.'/notes/index.php?user='.
-                $menteeuser->id.'\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,'.
-                'directories=no,scrollbars=yes,resizable=yes\'); return false;">'.
-                get_string('show_all_notes', 'block_fn_mentor').'</a>';
+            echo block_fn_mentor_render_link_with_window(new moodle_url('/notes/index.php', ['user' => $menteeuser->id]),
+                get_string('show_all_notes', 'block_fn_mentor'));
         } else {
             // Add a note.
-            echo '<a  href="'.$CFG->wwwroot.'/notes/index.php?user='.$menteeuser->id.
-                ' "onclick="window.open(\''.$CFG->wwwroot.'/notes/index.php?user='.
-                $menteeuser->id.'\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,'.
-                'directories=no,scrollbars=yes,resizable=yes\'); return false;">'.
-                get_string('add_a_note', 'block_fn_mentor').'</a>';
+            echo block_fn_mentor_render_link_with_window(new moodle_url('/notes/index.php', ['user' => $menteeuser->id]),
+                get_string('add_a_note', 'block_fn_mentor'));
         }
     }
 
@@ -397,11 +386,10 @@ if ($enrolledcourses) {
         echo '<tr>';
 
         echo '<td valign="top" class="mentee-grey-border">';
-        echo '<div class="overview-course coursetitle"><a  href="' . $CFG->wwwroot . '/course/view.php?id=' .
-            $enrolledcourse->id . '" onclick="window.open(\'' . $CFG->wwwroot . '/course/view.php?id=' .
-            $enrolledcourse->id . '\', \'\', \'width=800,height=600,toolbar=no,location=no,menubar=no,'.
-            'copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes\'); return false;" class="" >' .
-            $coursefullname . '</a></div>';
+        echo html_writer::div(
+            block_fn_mentor_render_link_with_window(new moodle_url('/course/view.php', ['id' => $enrolledcourse->id]),
+            $coursefullname),
+            'overview-course coursetitle');
 
         echo '<div class="overview-teacher">';
         echo '<table class="mentee-teacher-table">';

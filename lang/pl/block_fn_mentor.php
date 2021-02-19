@@ -100,7 +100,7 @@ $string['emailsent'] = '..........Email[SENT]';
 $string['export'] = 'Eksport';
 $string['export_includeallusers'] = 'Include all users on the Moodle site';
 $string['export_includeenrolledusers'] = 'Include all users that are currently enrolled in at least one active course';
-$string['export_mentorsandmanagers'] = 'Include all users that currently mentors and managers. 
+$string['export_mentorsandmanagers'] = 'Include all users that currently mentors and managers.
 This option will preserve the mentor-mentee relations as well as group memberships.';
 $string['exportusers'] = 'Eksport użytkowników';
 $string['filter'] = 'Filtr';
@@ -117,7 +117,7 @@ $string['fn_mentor:viewallmentees'] = 'View students that are not my mentees';
 $string['fn_mentor:viewblock'] = 'View block';
 $string['fn_mentor:viewcoursenotes'] = 'View course notes';
 $string['followingstudentsmatch'] = 'The following students currently match the criteria of this notification rule';
-$string['followinguserssend'] = 'If this rule is run now, the Mentor Manager will attempt to send notifications to the following users. 
+$string['followinguserssend'] = 'If this rule is run now, the Mentor Manager will attempt to send notifications to the following users.
 Note that the colour of the name indicates the role of that user: Green = student, Blue = mentor, Red = teacher.';
 $string['g2'] = 'Course Grade';
 $string['g2_message'] = '{$a->firstname} has an overall course grade average of {$a->g2}.';
