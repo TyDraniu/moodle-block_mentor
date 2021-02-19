@@ -345,10 +345,9 @@
 #page-blocks-fn_mentor-course_overview .coursetitle a,
 #page-blocks-fn_mentor-course_overview_single .coursetitle a {
     background-color: white;
-    color: #787878;
+    color: #dc1e23;
     font-size: 16px;
     font-weight: bold;
-    padding: 5px;
     text-align: center;
 }
 #page-blocks-fn_mentor-course_overview table.simplegradebook,
@@ -448,6 +447,7 @@
 #page-blocks-fn_mentor-course_overview td.mentee-teacher-table-label,
 #page-blocks-fn_mentor-course_overview_single td.mentee-teacher-table-label {
     width: 47px;
+    vertical-align: top;
 }
 #page-blocks-fn_mentor-course_overview .mentee-grade_report,
 #page-blocks-fn_mentor-course_overview_single .mentee-grade_report {
