@@ -199,6 +199,7 @@ $string['n2_message'] = '{$a->firstname} has not completed any activities in the
 $string['name'] = 'Name';
 $string['no_activities'] = 'There are no activities in this course.';
 $string['nocoursetotal'] = 'Gradebook does not contain calculation for course total.';
+$string['nogrades'] = 'There\'s no grades in this course.';
 $string['nomessagessent'] = 'No messages were sent.';
 $string['not_found'] = 'Record not found';
 $string['notattempted'] = 'Not Attempted';

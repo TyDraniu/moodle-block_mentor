@@ -762,7 +762,8 @@ function block_fn_mentor_render_mentees_by_mentor($data, $show) {
 
         $html .= html_writer::div(
             html_writer::nonempty_tag('strong',
-                block_fn_mentor_render_link_with_window($mentorurl, $mentor['mentor']->firstname . ' ' . $mentor['mentor']->lastname)
+                block_fn_mentor_render_link_with_window($mentorurl,
+                    $mentor['mentor']->firstname . ' ' . $mentor['mentor']->lastname)
             ), 'mentor'
         );
 
@@ -2657,7 +2658,7 @@ function block_fn_mentor_activity_progress($course, $menteeid, $modgradesarray) 
         // Completed.
         $progressdata->content->items[] = block_fn_mentor_render_link_with_window(
                 new moodle_url('/blocks/fn_mentor/listactivities.php',
-                            ['id' => $course->id, 'menteeid' => $menteeid, 'show' => 'completed','navlevel' => 'top']),
+                            ['id' => $course->id, 'menteeid' => $menteeid, 'show' => 'completed', 'navlevel' => 'top']),
             $completedactivities . ' '.$completed);
 
         $progressdata->content->icons[] = '<img src="' . $CFG->wwwroot .
@@ -2688,7 +2689,7 @@ function block_fn_mentor_activity_progress($course, $menteeid, $modgradesarray) 
         // Not Attempted.
         $progressdata->content->items[] = block_fn_mentor_render_link_with_window(
             new moodle_url('/blocks/fn_mentor/listactivities.php',
-                ['id' => $course->id, 'menteeid' => $menteeid, 'show' => 'notattempted', 'navlevel'=> 'top']),
+                ['id' => $course->id, 'menteeid' => $menteeid, 'show' => 'notattempted', 'navlevel' => 'top']),
             $notattemptedactivities . ' '.$notattempted);
 
         $progressdata->content->icons[] = '<img src="' . $CFG->wwwroot .
@@ -2697,7 +2698,7 @@ function block_fn_mentor_activity_progress($course, $menteeid, $modgradesarray) 
         // Waiting for grade.
         $progressdata->content->items[] = block_fn_mentor_render_link_with_window(
             new moodle_url('/blocks/fn_mentor/listactivities.php',
-                ['id' => $course->id, 'menteeid' => $menteeid, 'show' => 'waitingforgrade', 'navlevel'=> 'top']),
+                ['id' => $course->id, 'menteeid' => $menteeid, 'show' => 'waitingforgrade', 'navlevel' => 'top']),
             $waitingforgradeactivities . ' '.$waitingforgrade);
 
         $progressdata->content->icons[] = '<img src="' . $CFG->wwwroot .
@@ -3013,12 +3014,10 @@ function block_fn_mentor_generate_report(progress_bar $progressbar = null) {
 
     // Pivot part.
     $sql = "SELECT DISTINCT rd.courseid FROM {block_fn_mentor_report_data} rd WHERE rd.deleted = 0".$filter;
-    $fieldscreate = '';
+
     $fieldsdata = '';
     if ($fields = $DB->get_records_sql($sql, $params)) {
         foreach ($fields as $field) {
-            $fieldscreate .= " `completion".$field->courseid."` decimal(10,2) NOT NULL DEFAULT '0.00',\n";
-            $fieldscreate .= " `passing".$field->courseid."` decimal(10,2) DEFAULT NULL,\n";
             $fieldsdata .= " MAX(CASE WHEN td.courseid=".
                 $field->courseid." THEN td.completionrate ELSE '-1' END) completion".$field->courseid.",\n";
             $fieldsdata .= " MAX(CASE WHEN td.courseid=".
@@ -3210,7 +3209,8 @@ function block_fn_mentor_get_group_members($groupid, $role) {
     global $DB;
 
     if ($role == 'M') {
-        $select = "IF(gm.teamleader='1', CONCAT('[GT] ', u.firstname, ' ', u.lastname), CONCAT(u.firstname, ' ', u.lastname)) fullname";
+        $select = "IF(gm.teamleader='1', CONCAT('[GT] ', u.firstname, ' ', u.lastname),
+                    CONCAT(u.firstname, ' ', u.lastname)) fullname";
     } else {
         $select = "CONCAT( u.firstname, ' ', u.lastname) fullname";
     }

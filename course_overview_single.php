@@ -158,7 +158,7 @@ if (($isstudent) && ($USER->id <> $menteeid)  && (!$isteacher && !$isadmin && !$
 
 $messages = array();
 
-$title = get_string('page_title_assign_mentor', 'block_fn_mentor');
+$title = get_string('pluginname', 'block_fn_mentor');
 $heading = $SITE->fullname;
 
 $PAGE->set_url('/blocks/fn_mentor/course_overview_single.php');
@@ -626,8 +626,14 @@ if ($navpage == 'overview') {
     if (!$course = $DB->get_record('course', array('id' => $courseid))) {
         print_error('nocourseid');
     }
+    if ($course->showgrades == 0) {
+        echo '<p>' . get_string('nogrades', 'block_fn_mentor') . '</p>';
+    }
+    else {
+        grade_report_user_profilereport($course, $menteeuser, true);
+    }
 
-    grade_report_user_profilereport($course, $menteeuser, true);
+
 
     echo '</div>';
 

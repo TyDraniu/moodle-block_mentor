@@ -94,7 +94,7 @@ if (($isstudent) && ($USER->id <> $menteeid)  && (!$isteacher && !$isadmin && !$
 
 $menteeuser = $DB->get_record('user', array('id' => $menteeid), '*', MUST_EXIST);
 
-$title = get_string('page_title_assign_mentor', 'block_fn_mentor');
+$title = get_string('pluginname', 'block_fn_mentor');
 $heading = $SITE->fullname;
 
 $PAGE->set_url('/blocks/fn_mentor/course_overview.php');
