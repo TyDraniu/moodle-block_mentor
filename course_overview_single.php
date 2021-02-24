@@ -627,13 +627,10 @@ if ($navpage == 'overview') {
         print_error('nocourseid');
     }
     if ($course->showgrades == 0) {
-        echo '<p>' . get_string('nogrades', 'block_fn_mentor') . '</p>';
-    }
-    else {
+        echo '<p>' . get_string('nogrades', 'block_fn_mentor') . $OUTPUT->help_icon('showgrades', 'moodle') .'</p>';
+    } else {
         grade_report_user_profilereport($course, $menteeuser, true);
     }
-
-
 
     echo '</div>';
 

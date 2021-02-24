@@ -195,12 +195,18 @@ class block_fn_mentor extends block_base {
                     if ($filtercourses) {
                         if (in_array($course->id, $filtercourses)) {
                             $courseurl[$course->id] = new moodle_url('/'.$indexphp,
-                                ['coursefilter' => $course->id, 'groupfilter' => $groupfilter, 'sortby' => $sortby, 'showall' => $showall]);
+                                                        ['coursefilter' => $course->id,
+                                                        'groupfilter' => $groupfilter,
+                                                        'sortby' => $sortby,
+                                                        'showall' => $showall]);
                             $coursemenu[$courseurl[$course->id]->out(false)] = $course->fullname;
                         }
                     } else {
                         $courseurl[$course->id] = new moodle_url('/'.$indexphp,
-                            ['coursefilter' => $course->id, 'groupfilter' => $groupfilter, 'sortby' => $sortby, 'showall' => $showall]);
+                                                    ['coursefilter' => $course->id,
+                                                    'groupfilter' => $groupfilter,
+                                                    'sortby' => $sortby,
+                                                    'showall' => $showall]);
                         $coursemenu[$courseurl[$course->id]->out(false)] = $course->fullname;
                     }
                 }
@@ -231,12 +237,18 @@ class block_fn_mentor extends block_base {
                             if ($filtercourses) {
                                 if (in_array($course->id, $filtercourses)) {
                                     $courseurl[$course->id] = new moodle_url('/'.$indexphp,
-                                        ['coursefilter' => $course->id, 'groupfilter' => $groupfilter, 'sortby' => $sortby, 'showall' => $showall]);
+                                                            ['coursefilter' => $course->id,
+                                                            'groupfilter' => $groupfilter,
+                                                            'sortby' => $sortby,
+                                                            'showall' => $showall]);
                                     $coursemenu[$courseurl[$course->id]->out(false)] = $course->fullname;
                                 }
                             } else {
                                 $courseurl[$course->id] = new moodle_url('/'.$indexphp,
-                                    ['coursefilter' => $course->id, 'groupfilter' => $groupfilter, 'sortby' => $sortby, 'showall' => $showall]);
+                                                         ['coursefilter' => $course->id,
+                                                        'groupfilter' => $groupfilter,
+                                                        'sortby' => $sortby,
+                                                        'showall' => $showall]);
                                 $coursemenu[$courseurl[$course->id]->out(false)] = $course->fullname;
                             }
                         }
